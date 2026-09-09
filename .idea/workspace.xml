@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="393ebe97-6f28-4eab-a612-0b7a4c2d2978" name="Changes" comment="- Security config updated" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_C:/Users/SANKET/Desktop/SMS-Developement/school-management" value="3ELDDCmLsKOTXf8T4gcI1LrHXhb" />
+    </persistenceIdMap>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Sanket-Kadam01&quot;
+  }
+}</component>
+  <component name="GithubDefaultAccount">
+    <option name="defaultAccountId" value="c419866d-6a2a-418e-b06f-155dd85575d7" />
+  </component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Jitesh30j/school-management.git&quot;,
+    &quot;accountId&quot;: &quot;c419866d-6a2a-418e-b06f-155dd85575d7&quot;
+  }
+}</component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="3ELDDCmLsKOTXf8T4gcI1LrHXhb" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Maven.demo [clean,install].executor": "Run",
+    "Notification.DisplayName-DoNotAsk-Database detector": "Database detector",
+    "Notification.DoNotAsk-Database detector": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "Spring Boot.Application.executor": "Run",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/SANKET/Desktop/SMS-Developement/school-management",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration name="Application" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="demo" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.schoolmanagement.Application" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.schoolmanagement.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Spring Boot.Application" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-84258761d1cc-intellij.indexing.shared.core-IU-243.28141.41" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.28141.41" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="393ebe97-6f28-4eab-a612-0b7a4c2d2978" name="Changes" comment="" />
+      <created>1779948837391</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1779948837391</updated>
+      <workItem from="1779948839074" duration="673000" />
+      <workItem from="1779949557430" duration="2086000" />
+      <workItem from="1779951934714" duration="11820000" />
+      <workItem from="1780131369302" duration="4205000" />
+    </task>
+    <task id="LOCAL-00001" summary=" - Logs added for JWT Auth filter.">
+      <option name="closed" value="true" />
+      <created>1779952318558</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1779952318558</updated>
+    </task>
+    <task id="LOCAL-00002" summary=" - Error resolved while building JAR file.">
+      <option name="closed" value="true" />
+      <created>1779961611849</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1779961611849</updated>
+    </task>
+    <task id="LOCAL-00003" summary="- POM file updated.">
+      <option name="closed" value="true" />
+      <created>1779969249892</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1779969249892</updated>
+    </task>
+    <task id="LOCAL-00004" summary="- Code refactored for JAR build.">
+      <option name="closed" value="true" />
+      <created>1779969956800</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1779969956800</updated>
+    </task>
+    <task id="LOCAL-00005" summary=" - application.properties updated.">
+      <option name="closed" value="true" />
+      <created>1779969999776</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1779969999776</updated>
+    </task>
+    <task id="LOCAL-00006" summary="- Super admin login authenticated">
+      <option name="closed" value="true" />
+      <created>1780134218477</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1780134218477</updated>
+    </task>
+    <task id="LOCAL-00007" summary="- Super admin login authenticated">
+      <option name="closed" value="true" />
+      <created>1780135222175</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1780135222175</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value=" - Logs added for JWT Auth filter." />
+    <MESSAGE value=" - Error resolved while building JAR file." />
+    <MESSAGE value="- POM file updated." />
+    <MESSAGE value="- Code refactored for JAR build." />
+    <MESSAGE value=" - application.properties updated." />
+    <MESSAGE value="- Super admin login authenticated" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Super admin login authenticated" />
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
+  </component>
+</project>
