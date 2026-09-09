@@ -15,7 +15,7 @@ public class SystemStatusController {
         Map<String, Object> status = new HashMap<>();
         status.put("application", "School Management System");
         status.put("status", "UP");
-        status.put("environment", "Production (Clever Cloud)");
+        status.put("environment", "Local Development");
         status.put("version", "0.0.1-SNAPSHOT");
         status.put("timestamp", System.currentTimeMillis());
         return status;
