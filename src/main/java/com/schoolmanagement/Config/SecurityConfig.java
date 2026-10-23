@@ -42,7 +42,12 @@ public class SecurityConfig {
                                                                 "/api/AddSchool/verifyOtp",
                                                                 "/api/AddSchool/updatePassword",
                                                                 "/api/status",
-                                                                "/api/public/razorpay/**")
+                                                                "/api/public/razorpay/**",
+                                                                "/swagger-ui/**",
+                                                                "/swagger-ui.html",
+                                                                "/v3/api-docs/**",
+                                                                "/actuator/health",
+                                                                "/actuator/info")
                                                 .permitAll()
 
                                                 // ── App Admin / Super Admin protected endpoints ───────────────
