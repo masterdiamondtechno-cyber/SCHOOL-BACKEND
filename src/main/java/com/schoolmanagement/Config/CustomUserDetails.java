@@ -1,8 +1,8 @@
 package com.schoolmanagement.Config;
 
-import com.schoolmanagement.school_admin_Entity.AddStudent;
-import com.schoolmanagement.school_admin_Entity.AddTeacher;
-import com.schoolmanagement.school_admin_Entity.School;
+import com.schoolmanagement.school.entity.AddStudent;
+import com.schoolmanagement.school.entity.AddTeacher;
+import com.schoolmanagement.school.entity.School;
 import com.schoolmanagement.owner.entity.Owner;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

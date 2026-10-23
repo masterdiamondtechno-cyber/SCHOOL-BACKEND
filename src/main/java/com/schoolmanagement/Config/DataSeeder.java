@@ -1,11 +1,11 @@
 package com.schoolmanagement.Config;
 
-import com.schoolmanagement.school_admin_Entity.Role;
-import com.schoolmanagement.school_admin_Repo.RoleRepository;
-import com.schoolmanagement.app_admin_Entity.SubscriptionPlan;
-import com.schoolmanagement.app_admin_Repo.SubscriptionPlanRepository;
-import com.schoolmanagement.app_admin_Entity.User;
-import com.schoolmanagement.app_admin_Repo.UserRepository;
+import com.schoolmanagement.school.entity.Role;
+import com.schoolmanagement.school.repository.RoleRepository;
+import com.schoolmanagement.admin.entity.SubscriptionPlan;
+import com.schoolmanagement.admin.repository.SubscriptionPlanRepository;
+import com.schoolmanagement.admin.entity.User;
+import com.schoolmanagement.admin.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;

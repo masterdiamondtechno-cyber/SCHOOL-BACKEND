@@ -61,7 +61,7 @@ public class OwnerController {
 
     @PostMapping(value = "/schools/request", consumes = {"multipart/form-data"})
     public ResponseEntity<java.util.Map<String, Object>> requestSchoolBranch(
-            @ModelAttribute com.schoolmanagement.school_admin_DTO.SchoolDTO request,
+            @ModelAttribute com.schoolmanagement.school.dto.SchoolDTO request,
             @RequestParam(value = "schoolLogo", required = false) org.springframework.web.multipart.MultipartFile logoFile) {
         
         java.util.Map<String, Object> result = ownerService.requestSchoolBranch(request.getOwnerId(), request, logoFile);

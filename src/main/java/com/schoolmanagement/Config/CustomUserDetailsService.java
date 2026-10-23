@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 
 import com.schoolmanagement.owner.entity.Owner;
 import com.schoolmanagement.owner.repository.OwnerRepository;
-import com.schoolmanagement.school_admin_Entity.AddStudent;
-import com.schoolmanagement.school_admin_Entity.AddTeacher;
-import com.schoolmanagement.school_admin_Entity.School;
-import com.schoolmanagement.school_admin_Repo.AddStudentRepository;
-import com.schoolmanagement.school_admin_Repo.AddTeacherRepository;
-import com.schoolmanagement.school_admin_Repo.SchoolRepository;
+import com.schoolmanagement.school.entity.AddStudent;
+import com.schoolmanagement.school.entity.AddTeacher;
+import com.schoolmanagement.school.entity.School;
+import com.schoolmanagement.school.repository.AddStudentRepository;
+import com.schoolmanagement.school.repository.AddTeacherRepository;
+import com.schoolmanagement.school.repository.SchoolRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {

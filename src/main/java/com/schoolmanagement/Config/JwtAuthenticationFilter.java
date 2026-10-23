@@ -13,9 +13,9 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.schoolmanagement.school_admin_Repo.AddTeacherRepository;
-import com.schoolmanagement.school_admin_Repo.AddStudentRepository;
-import com.schoolmanagement.school_admin_Repo.SchoolRepository;
+import com.schoolmanagement.school.repository.AddTeacherRepository;
+import com.schoolmanagement.school.repository.AddStudentRepository;
+import com.schoolmanagement.school.repository.SchoolRepository;
 
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -113,7 +113,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     if (sidClaim != null) {
                         Long sid = Long.valueOf(sidClaim.toString());
                         if (!"APP_ADMIN".equalsIgnoreCase(role)) {
-                            java.util.Optional<com.schoolmanagement.school_admin_Entity.School> schoolOpt = schoolRepository.findBySchoolId(sid);
+                            java.util.Optional<com.schoolmanagement.school.entity.School> schoolOpt = schoolRepository.findBySchoolId(sid);
                             if (schoolOpt.isPresent() && !"ACTIVE".equalsIgnoreCase(schoolOpt.get().getSchoolStatus())) {
                                 LOGGER.warn("Deactivated school '{}' (ID {}) attempted request to {}", schoolOpt.get().getSchoolName(), sid, request.getRequestURI());
                                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -129,7 +129,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         Object uidClaim = jwtUtil.extractClaim(token, "uid");
                         if (uidClaim != null) {
                             Long uid = Long.valueOf(uidClaim.toString());
-                            java.util.Optional<com.schoolmanagement.school_admin_Entity.AddTeacher> teacherOpt = teacherRepository.findById(uid);
+                            java.util.Optional<com.schoolmanagement.school.entity.AddTeacher> teacherOpt = teacherRepository.findById(uid);
                             if (teacherOpt.isPresent() && !"Active".equalsIgnoreCase(teacherOpt.get().getStatus())) {
                                 LOGGER.warn("Deactivated teacher '{}' (ID {}) attempted request to {}", username, uid, request.getRequestURI());
                                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -142,7 +142,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         Object uidClaim = jwtUtil.extractClaim(token, "uid");
                         if (uidClaim != null) {
                             Long uid = Long.valueOf(uidClaim.toString());
-                            java.util.Optional<com.schoolmanagement.school_admin_Entity.AddStudent> studentOpt = studentRepository.findById(uid);
+                            java.util.Optional<com.schoolmanagement.school.entity.AddStudent> studentOpt = studentRepository.findById(uid);
                             if (studentOpt.isPresent() && !"Active".equalsIgnoreCase(studentOpt.get().getStatus())) {
                                 LOGGER.warn("Deactivated student '{}' (ID {}) attempted request to {}", username, uid, request.getRequestURI());
                                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);

@@ -25,7 +25,7 @@ public interface OwnerRepository extends JpaRepository<Owner, Long> {
 
     boolean existsByPhoneNoAndOwnerIdNot(String phoneNo, Long ownerId);
 
-    @org.springframework.data.jpa.repository.Query(value = "SELECT new com.schoolmanagement.app_admin_DTO.OwnerListDTO(" +
+    @org.springframework.data.jpa.repository.Query(value = "SELECT new com.schoolmanagement.admin.dto.OwnerListDTO(" +
             "o.ownerId, o.name, o.email, o.phoneNo, COUNT(s.schoolId)) " +
             "FROM Owner o LEFT JOIN School s ON s.owner.ownerId = o.ownerId " +
             "WHERE (:status IS NULL OR o.status = :status) " +
@@ -40,7 +40,7 @@ public interface OwnerRepository extends JpaRepository<Owner, Long> {
             "LOWER(o.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
             "LOWER(o.email) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
             "o.phoneNo LIKE CONCAT('%', :search, '%'))")
-    org.springframework.data.domain.Page<com.schoolmanagement.app_admin_DTO.OwnerListDTO> findAllOwnersWithSchoolCount(
+    org.springframework.data.domain.Page<com.schoolmanagement.admin.dto.OwnerListDTO> findAllOwnersWithSchoolCount(
             @org.springframework.data.repository.query.Param("status") String status,
             @org.springframework.data.repository.query.Param("search") String search,
             org.springframework.data.domain.Pageable pageable);

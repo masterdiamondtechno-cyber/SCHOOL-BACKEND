@@ -1,6 +1,6 @@
 package com.schoolmanagement.owner.entity;
 
-import com.schoolmanagement.school_admin_Entity.Role;
+import com.schoolmanagement.school.entity.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

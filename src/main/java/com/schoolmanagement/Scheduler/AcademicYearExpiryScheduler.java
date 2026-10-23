@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.schoolmanagement.school_admin_Entity.AcademicYear;
-import com.schoolmanagement.school_admin_Repo.AcademicYearRepository;
+import com.schoolmanagement.school.entity.AcademicYear;
+import com.schoolmanagement.school.repository.AcademicYearRepository;
 
 @Component
 public class AcademicYearExpiryScheduler {
@@ -18,7 +18,7 @@ public class AcademicYearExpiryScheduler {
     private AcademicYearRepository academicYearRepository;
     
     @Autowired
-    private com.schoolmanagement.school_admin_Repo.TeacherLeaveRepository teacherLeaveRepository;
+    private com.schoolmanagement.school.repository.TeacherLeaveRepository teacherLeaveRepository;
      
 
     /**
@@ -55,7 +55,7 @@ public class AcademicYearExpiryScheduler {
      
         LocalDate today = LocalDate.now();
      
-        List<com.schoolmanagement.school_admin_Entity.TeacherLeave> staleLeaves =
+        List<com.schoolmanagement.school.entity.TeacherLeave> staleLeaves =
                 teacherLeaveRepository.findStalePendingLeaves(today);
      
         if (staleLeaves.isEmpty()) {
@@ -63,7 +63,7 @@ public class AcademicYearExpiryScheduler {
             return;
         }
      
-        for (com.schoolmanagement.school_admin_Entity.TeacherLeave leave : staleLeaves) {
+        for (com.schoolmanagement.school.entity.TeacherLeave leave : staleLeaves) {
             leave.setStatus("CANCELLED");
             leave.setReviewRemark("Auto-cancelled: leave date passed without school action");
             leave.setUpdatedAt(LocalDateTime.now());

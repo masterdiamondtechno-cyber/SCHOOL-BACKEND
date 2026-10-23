@@ -4,13 +4,13 @@ import com.schoolmanagement.owner.dto.*;
 import com.schoolmanagement.owner.entity.Owner;
 import com.schoolmanagement.owner.repository.OwnerRepository;
 import com.schoolmanagement.owner.repository.OwnerSchoolQueryRepository;
-import com.schoolmanagement.app_admin_DTO.OwnerApprovalRequestDTO;
-import com.schoolmanagement.app_admin_Service.EmailService;
+import com.schoolmanagement.admin.dto.OwnerApprovalRequestDTO;
+import com.schoolmanagement.admin.service.EmailService;
 import com.schoolmanagement.Config.PasswordGenerator;
-import com.schoolmanagement.school_admin_DTO.SchoolDTO;
-import com.schoolmanagement.school_admin_Entity.School;
-import com.schoolmanagement.school_admin_Service.SchoolService;
-import com.schoolmanagement.school_admin_Repo.SchoolRepository;
+import com.schoolmanagement.school.dto.SchoolDTO;
+import com.schoolmanagement.school.entity.School;
+import com.schoolmanagement.school.service.SchoolService;
+import com.schoolmanagement.school.repository.SchoolRepository;
 import org.springframework.web.multipart.MultipartFile;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class OwnerService {
     private OwnerRepository ownerRepository;
 
     @Autowired
-    private com.schoolmanagement.school_admin_Repo.RoleRepository roleRepository;
+    private com.schoolmanagement.school.repository.RoleRepository roleRepository;
 
     @Autowired
     private OwnerSchoolQueryRepository queryRepo;
@@ -449,9 +449,9 @@ public class OwnerService {
     // ─────────────────────────────────────────────────────────────
     //  APP ADMIN
     // ─────────────────────────────────────────────────────────────
-    public PagedResponseDTO<com.schoolmanagement.app_admin_DTO.OwnerListDTO> getAllOwners(
+    public PagedResponseDTO<com.schoolmanagement.admin.dto.OwnerListDTO> getAllOwners(
             String status, String search, Pageable pageable) {
-        org.springframework.data.domain.Page<com.schoolmanagement.app_admin_DTO.OwnerListDTO> page =
+        org.springframework.data.domain.Page<com.schoolmanagement.admin.dto.OwnerListDTO> page =
                 ownerRepository.findAllOwnersWithSchoolCount(status, search, pageable);
 
         return new PagedResponseDTO<>(

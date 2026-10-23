@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Test;
 
-import com.schoolmanagement.school_admin_Entity.School;
+import com.schoolmanagement.school.entity.School;
 
 class ManualSubscriptionTest {
 

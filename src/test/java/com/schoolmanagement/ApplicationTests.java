@@ -3,9 +3,9 @@ package com.schoolmanagement;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import com.schoolmanagement.app_admin_Service.SubscriptionPlanService;
-import com.schoolmanagement.app_admin_Repo.SubscriptionPlanRepository;
-import com.schoolmanagement.app_admin_Entity.SubscriptionPlan;
+import com.schoolmanagement.admin.service.SubscriptionPlanService;
+import com.schoolmanagement.admin.repository.SubscriptionPlanRepository;
+import com.schoolmanagement.admin.entity.SubscriptionPlan;
 import java.util.List;
 
 @SpringBootTest

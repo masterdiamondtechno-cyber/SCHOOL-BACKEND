@@ -2,7 +2,7 @@ package com.schoolmanagement.owner.controller;
 
 import com.schoolmanagement.owner.dto.OwnerRegisterRequestDTO;
 import com.schoolmanagement.owner.dto.OwnerVerifyRequestDTO;
-import com.schoolmanagement.app_admin_Service.UserService;
+import com.schoolmanagement.admin.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
