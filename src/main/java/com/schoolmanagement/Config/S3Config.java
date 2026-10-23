@@ -24,23 +24,23 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 public class S3Config {
 
     // ── Light bucket credentials (existing — logos, study materials) ───────
-    @Value("${aws.region}")
+    @Value("${aws.region:ap-south-1}")
     private String lightRegion;
 
-    @Value("${aws.accessKey}")
+    @Value("${aws.accessKey:local-access-key}")
     private String lightAccessKey;
 
-    @Value("${aws.secretKey}")
+    @Value("${aws.secretKey:local-secret-key}")
     private String lightSecretKey;
 
     // ── Heavy bucket credentials (recorded lectures) ──────────────────────
-    @Value("${aws.heavy.region}")
+    @Value("${aws.heavy.region:ap-south-1}")
     private String heavyRegion;
 
-    @Value("${aws.heavy.accessKey}")
+    @Value("${aws.heavy.accessKey:local-access-key}")
     private String heavyAccessKey;
 
-    @Value("${aws.heavy.secretKey}")
+    @Value("${aws.heavy.secretKey:local-secret-key}")
     private String heavySecretKey;
 
     // =====================================================================

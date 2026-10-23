@@ -1,4 +1,4 @@
-package com.schoolmanagement.admin.serviceImpl;
+package com.schoolmanagement.admin.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
