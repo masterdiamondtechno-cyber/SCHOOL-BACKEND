@@ -41,7 +41,7 @@ public class SubscriptionInterceptor implements HandlerInterceptor {
         Long schoolId;
         try {
             role    = jwtUtil.extractRole(token);
-            Object schoolIdClaim = jwtUtil.extractClaim(token, "schoolId");
+            Object schoolIdClaim = jwtUtil.extractClaim(token, "sid");  // "sid" = schoolId in JWT
             schoolId = schoolIdClaim != null ? Long.parseLong(schoolIdClaim.toString()) : null;
         } catch (Exception e) {
             // Token invalid hai → Security filter handle karega
