@@ -47,7 +47,9 @@ public class SecurityConfig {
                                                                 "/swagger-ui.html",
                                                                 "/v3/api-docs/**",
                                                                 "/actuator/health",
-                                                                "/actuator/info")
+                                                                "/actuator/info",
+                                                                "/api/subscription/plans",
+                                                                "/api/subscription/plans/**")
                                                 .permitAll()
 
                                                 // ── App Admin / Super Admin protected endpoints ───────────────
