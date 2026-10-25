@@ -3,6 +3,7 @@ package com.schoolmanagement.subscription.controller;
 import com.schoolmanagement.common.ApiResponse;
 import com.schoolmanagement.subscription.dto.*;
 import com.schoolmanagement.subscription.entity.SubscriptionPlan.PlanType;
+import com.schoolmanagement.subscription.service.RazorpayService;
 import com.schoolmanagement.subscription.service.SubscriptionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,6 +22,7 @@ import java.util.List;
 public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
+    private final RazorpayService razorpayService;
 
     // ─── Public APIs (No Auth needed) ───────────────────
 
@@ -51,13 +53,35 @@ public class SubscriptionController {
     }
 
     @PostMapping("/subscribe/{schoolId}")
-    @Operation(summary = "Subscribe school to a plan")
+    @Operation(summary = "Direct subscribe school to a plan (Offline/Admin override)")
     @PreAuthorize("hasRole('SCHOOL') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<SchoolSubscriptionDTO>> subscribe(
             @PathVariable Long schoolId,
             @Valid @RequestBody SubscribeRequestDTO request) {
         SchoolSubscriptionDTO result = subscriptionService.subscribe(schoolId, request);
         return ResponseEntity.ok(ApiResponse.success("Subscription activated successfully!", result));
+    }
+
+    // ─── Razorpay Payment Integration Endpoints ───────────
+
+    @PostMapping("/create-order/{schoolId}")
+    @Operation(summary = "Create Razorpay Order (Mock or Real)")
+    @PreAuthorize("hasRole('SCHOOL') or hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<PaymentOrderResponseDTO>> createPaymentOrder(
+            @PathVariable Long schoolId,
+            @Valid @RequestBody PaymentOrderRequestDTO request) {
+        PaymentOrderResponseDTO order = razorpayService.createOrder(schoolId, request);
+        return ResponseEntity.ok(ApiResponse.success("Payment order created successfully", order));
+    }
+
+    @PostMapping("/verify-payment/{schoolId}")
+    @Operation(summary = "Verify Razorpay Payment and activate subscription")
+    @PreAuthorize("hasRole('SCHOOL') or hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<SchoolSubscriptionDTO>> verifyPayment(
+            @PathVariable Long schoolId,
+            @Valid @RequestBody PaymentVerifyRequestDTO request) {
+        SchoolSubscriptionDTO subscription = razorpayService.verifyPayment(schoolId, request);
+        return ResponseEntity.ok(ApiResponse.success("Payment verified! Subscription is now ACTIVE.", subscription));
     }
 
     @GetMapping("/current/{schoolId}")

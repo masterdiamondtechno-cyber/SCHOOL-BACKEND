@@ -66,10 +66,10 @@ public class PaymentHistory {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
-        // Invoice number generate karo: INV-2024-0001
+        // Unique Invoice number generate: INV-2026-XXXXXX
         if (invoiceNumber == null) {
-            invoiceNumber = "INV-" + java.time.LocalDate.now().getYear()
-                    + "-" + String.format("%06d", id != null ? id : 0);
+            long rand = (long) (Math.random() * 900000) + 100000;
+            invoiceNumber = "INV-" + java.time.LocalDate.now().getYear() + "-" + rand;
         }
     }
 
