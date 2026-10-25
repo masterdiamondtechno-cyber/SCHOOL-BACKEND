@@ -1,39 +1,153 @@
-﻿version: '3.8'
-
 services:
-  # ── PostgreSQL Database Container ──────────────────────────────────────────
-  postgres-db:
+  # ───────────────────────────────────────────────────────────
+  # 1. PostgreSQL Database
+  # ───────────────────────────────────────────────────────────
+  postgres:
     image: postgres:16-alpine
-    container_name: school_postgres
+    container_name: school-db
     restart: always
     environment:
-      POSTGRES_DB: school
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: root
+      POSTGRES_DB: ${DB_NAME:-school}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-root}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - school-network
 
-  # ── School Management Spring Boot Backend ──────────────────────────────────
-  school-backend:
-    build: .
-    container_name: school_backend
+  # ───────────────────────────────────────────────────────────
+  # 2. Eureka Service Discovery Server (Port 8761)
+  # ───────────────────────────────────────────────────────────
+  eureka-server:
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    container_name: eureka-server
     restart: always
-    depends_on:
-      - postgres-db
+    ports:
+      - "8761:8761"
+    environment:
+      SERVER_PORT: 8761
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+    networks:
+      - school-network
+
+  # ───────────────────────────────────────────────────────────
+  # 3. Spring Cloud API Gateway (Port 8080 - Single Public Entry)
+  # ───────────────────────────────────────────────────────────
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    restart: always
     ports:
       - "8080:8080"
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
-      - DB_HOST=postgres-db
-      - DB_PORT=5432
-      - DB_NAME=school
-      - DB_USER=postgres
-      - DB_PASSWORD=root
+      SERVER_PORT: 8080
+      EUREKA_HOST: eureka-server
+    depends_on:
+      - eureka-server
+    networks:
+      - school-network
+
+  # ───────────────────────────────────────────────────────────
+  # 4. Auth Service (Port 8081 - Unified Login & JWT)
+  # ───────────────────────────────────────────────────────────
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: auth-service
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      SERVER_PORT: 8081
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-school}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-root}
+      EUREKA_HOST: eureka-server
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    networks:
+      - school-network
+
+  # ───────────────────────────────────────────────────────────
+  # 5. Subscription Service (Port 8082 - SaaS Billing & Razorpay)
+  # ───────────────────────────────────────────────────────────
+  subscription-service:
+    build:
+      context: ./subscription-service
+      dockerfile: Dockerfile
+    container_name: subscription-service
+    restart: always
+    ports:
+      - "8082:8082"
+    environment:
+      SERVER_PORT: 8082
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-school}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-root}
+      RAZORPAY_KEY_ID: ${RAZORPAY_KEY_ID:-rzp_test_dummy_key_id}
+      RAZORPAY_KEY_SECRET: ${RAZORPAY_KEY_SECRET:-dummy_secret_key}
+      RAZORPAY_MOCK_ENABLED: ${RAZORPAY_MOCK_ENABLED:-true}
+      EUREKA_HOST: eureka-server
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    networks:
+      - school-network
+
+  # ───────────────────────────────────────────────────────────
+  # 6. School & Student Core Service (Port 8083 - 50k+ Students)
+  # ───────────────────────────────────────────────────────────
+  school-service:
+    build:
+      context: ./school-service
+      dockerfile: Dockerfile
+    container_name: school-service
+    restart: always
+    ports:
+      - "8083:8083"
+    environment:
+      SERVER_PORT: 8083
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-school}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-root}
+      EUREKA_HOST: eureka-server
     volumes:
-      - uploads_data:/app/uploads
+      - school_uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    networks:
+      - school-network
 
 volumes:
   postgres_data:
-  uploads_data:
+  school_uploads:
+
+networks:
+  school-network:
+    driver: bridge
