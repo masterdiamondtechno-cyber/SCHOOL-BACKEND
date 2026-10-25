@@ -1,13 +1,12 @@
 package com.schoolmanagement.subscription.service.impl;
 
+import com.schoolmanagement.school.entity.School;
+import com.schoolmanagement.school.repository.SchoolRepository;
 import com.schoolmanagement.subscription.dto.*;
-import com.schoolmanagement.subscription.entity.SchoolSubscription;
+import com.schoolmanagement.subscription.entity.*;
 import com.schoolmanagement.subscription.entity.SchoolSubscription.SubscriptionStatus;
-import com.schoolmanagement.subscription.entity.SubscriptionPlan;
 import com.schoolmanagement.subscription.entity.SubscriptionPlan.PlanType;
-import com.schoolmanagement.subscription.repository.PaymentHistoryRepository;
-import com.schoolmanagement.subscription.repository.SchoolSubscriptionRepository;
-import com.schoolmanagement.subscription.repository.SubscriptionPlanRepository;
+import com.schoolmanagement.subscription.repository.*;
 import com.schoolmanagement.subscription.service.SubscriptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,6 +31,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private final SubscriptionPlanRepository planRepo;
     private final SchoolSubscriptionRepository subscriptionRepo;
     private final PaymentHistoryRepository paymentRepo;
+    private final SchoolRepository schoolRepo;
 
     // ─── Plan Management ────────────────────────────────
 
@@ -60,7 +61,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 .isPresent();
 
         if (alreadyExists) {
-            throw new RuntimeException("School already has an active subscription or trial");
+            log.info("School {} already has an active subscription or trial. Skipping duplicate trial.", schoolId);
+            return mapSubscriptionToDTO(subscriptionRepo.findActiveSubscription(schoolId, LocalDate.now()).get());
         }
 
         // BASIC plan le aao default ke liye trial mein
@@ -82,6 +84,17 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 .build();
 
         SchoolSubscription saved = subscriptionRepo.save(trial);
+
+        // Keep School entity in sync
+        schoolRepo.findById(schoolId).ifPresent(s -> {
+            s.setSubscriptionStatus("TRIAL");
+            s.setSubscriptionSource("TRIAL");
+            s.setSubscriptionStartDate(today.atStartOfDay());
+            s.setSubscriptionEndDate(trialEnd.atTime(23, 59, 59));
+            s.setSubscriptionDuration("14 days");
+            schoolRepo.save(s);
+        });
+
         log.info("Free trial started for school: {} - Trial ends: {}", schoolId, trialEnd);
 
         return mapSubscriptionToDTO(saved);
@@ -126,6 +139,17 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 .build();
 
         SchoolSubscription saved = subscriptionRepo.save(subscription);
+
+        // Keep School entity in sync
+        schoolRepo.findById(schoolId).ifPresent(s -> {
+            s.setSubscriptionStatus("ACTIVE");
+            s.setSubscriptionSource("PURCHASED");
+            s.setSubscriptionStartDate(today.atStartOfDay());
+            s.setSubscriptionEndDate(endDate.atTime(23, 59, 59));
+            s.setSubscriptionDuration(request.getBillingCycle() == SchoolSubscription.BillingCycle.MONTHLY ? "1 month" : "1 year");
+            schoolRepo.save(s);
+        });
+
         log.info("School {} subscribed to {} plan - Active till: {}", schoolId, plan.getPlanType(), endDate);
 
         return mapSubscriptionToDTO(saved);
@@ -152,9 +176,16 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
         subscription.setStatus(SubscriptionStatus.CANCELLED);
         subscription.setCancellationReason(reason);
-        subscription.setCancelledAt(java.time.LocalDateTime.now());
+        subscription.setCancelledAt(LocalDateTime.now());
 
         SchoolSubscription saved = subscriptionRepo.save(subscription);
+
+        // Keep School entity in sync
+        schoolRepo.findById(schoolId).ifPresent(s -> {
+            s.setSubscriptionStatus("CANCELLED");
+            schoolRepo.save(s);
+        });
+
         log.info("Subscription cancelled for school: {} - Reason: {}", schoolId, reason);
 
         return mapSubscriptionToDTO(saved);
@@ -224,6 +255,12 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         expired.forEach(sub -> {
             sub.setStatus(SubscriptionStatus.EXPIRED);
             subscriptionRepo.save(sub);
+
+            schoolRepo.findById(sub.getSchoolId()).ifPresent(s -> {
+                s.setSubscriptionStatus("EXPIRED");
+                schoolRepo.save(s);
+            });
+
             log.warn("Subscription EXPIRED for school: {}", sub.getSchoolId());
             // TODO: Email bhejo — "Aapka subscription expire ho gaya"
         });
@@ -251,7 +288,6 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     // ─── Mappers ─────────────────────────────────────────
 
     private SubscriptionPlanDTO mapPlanToDTO(SubscriptionPlan plan) {
-        // Yearly savings calculate karo
         java.math.BigDecimal monthlyCostForYear = plan.getMonthlyPrice()
                 .multiply(java.math.BigDecimal.valueOf(12));
         java.math.BigDecimal savings = monthlyCostForYear.subtract(plan.getYearlyPrice());

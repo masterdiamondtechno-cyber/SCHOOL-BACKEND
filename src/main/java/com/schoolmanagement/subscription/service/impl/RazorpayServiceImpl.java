@@ -3,6 +3,7 @@ package com.schoolmanagement.subscription.service.impl;
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.Utils;
+import com.schoolmanagement.school.repository.SchoolRepository;
 import com.schoolmanagement.subscription.dto.PaymentOrderRequestDTO;
 import com.schoolmanagement.subscription.dto.PaymentOrderResponseDTO;
 import com.schoolmanagement.subscription.dto.PaymentVerifyRequestDTO;
@@ -39,6 +40,7 @@ public class RazorpayServiceImpl implements RazorpayService {
     private final SubscriptionPlanRepository planRepository;
     private final SchoolSubscriptionRepository subscriptionRepository;
     private final PaymentHistoryRepository paymentHistoryRepository;
+    private final SchoolRepository schoolRepository;
 
     @Value("${razorpay.key.id:rzp_test_dummy_key_id}")
     private String keyId;
@@ -172,6 +174,16 @@ public class RazorpayServiceImpl implements RazorpayService {
                 .build();
 
         SchoolSubscription savedSubscription = subscriptionRepository.save(activeSub);
+
+        // Keep School entity in sync
+        schoolRepository.findById(schoolId).ifPresent(s -> {
+            s.setSubscriptionStatus("ACTIVE");
+            s.setSubscriptionSource("PURCHASED");
+            s.setSubscriptionStartDate(today.atStartOfDay());
+            s.setSubscriptionEndDate(endDate.atTime(23, 59, 59));
+            s.setSubscriptionDuration(request.getBillingCycle() == BillingCycle.MONTHLY ? "1 month" : "1 year");
+            schoolRepository.save(s);
+        });
 
         // 5. Record Payment History
         PaymentHistory paymentHistory = PaymentHistory.builder()

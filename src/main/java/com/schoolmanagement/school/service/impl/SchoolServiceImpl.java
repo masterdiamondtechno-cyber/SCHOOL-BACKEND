@@ -77,6 +77,7 @@ public class SchoolServiceImpl implements SchoolService {
     @Autowired private NotificationRepository notificationRepository;
     @Autowired private RoleRepository roleRepository;
     @Autowired private OwnerRepository ownerRepository;
+    @Autowired private com.schoolmanagement.subscription.service.SubscriptionService subscriptionService;
 
     @Override
     @Transactional
@@ -115,6 +116,13 @@ public class SchoolServiceImpl implements SchoolService {
         approval.setEmail(savedSchool.getEmail());
         approval.setPhone(savedSchool.getPhoneNo());
         approvalRepository.save(approval);
+
+        // Auto-assign 14-day free trial for SaaS
+        try {
+            subscriptionService.startFreeTrial(savedSchool.getSchoolId());
+        } catch (Exception e) {
+            System.err.println("Could not auto-start free trial: " + e.getMessage());
+        }
 
         // Send Email notifying registration is under review
         try {

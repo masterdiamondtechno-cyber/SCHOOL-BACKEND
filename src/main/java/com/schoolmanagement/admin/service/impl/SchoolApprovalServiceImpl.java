@@ -43,6 +43,9 @@ public class SchoolApprovalServiceImpl implements SchoolApprovalService {
     @Autowired
     private OwnerRepository ownerRepository;
 
+    @Autowired
+    private com.schoolmanagement.subscription.service.SubscriptionService subscriptionService;
+
     @Override
     public Map<String, Object> approveOrReject(ApprovalRequestDTO request) {
         Map<String, Object> response = new HashMap<>();
@@ -97,6 +100,15 @@ public class SchoolApprovalServiceImpl implements SchoolApprovalService {
                 approval.setApprovalRejectionStatus("APPROVED");
                 approval.setRejectedReason(null);
                 approvalRepository.save(approval);
+
+                // Auto-start free trial if not already active
+                try {
+                    if (!subscriptionService.isSubscriptionActive(school.getSchoolId())) {
+                        subscriptionService.startFreeTrial(school.getSchoolId());
+                    }
+                } catch (Exception e) {
+                    System.err.println("Could not auto-start trial on approval: " + e.getMessage());
+                }
 
                 // 3d. Send approval email with raw password
                 emailService.sendPasswordEmail(school.getEmail(), rawPassword);
