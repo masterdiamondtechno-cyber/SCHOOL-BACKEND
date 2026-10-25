@@ -19,6 +19,7 @@ import com.schoolmanagement.subscription.repository.PaymentHistoryRepository;
 import com.schoolmanagement.subscription.repository.SchoolSubscriptionRepository;
 import com.schoolmanagement.subscription.repository.SubscriptionPlanRepository;
 import com.schoolmanagement.subscription.service.RazorpayService;
+import com.schoolmanagement.subscription.service.SubscriptionEmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
@@ -41,6 +42,7 @@ public class RazorpayServiceImpl implements RazorpayService {
     private final SchoolSubscriptionRepository subscriptionRepository;
     private final PaymentHistoryRepository paymentHistoryRepository;
     private final SchoolRepository schoolRepository;
+    private final SubscriptionEmailService subscriptionEmailService;
 
     @Value("${razorpay.key.id:rzp_test_dummy_key_id}")
     private String keyId;
@@ -203,7 +205,21 @@ public class RazorpayServiceImpl implements RazorpayService {
         log.info("Payment SUCCESS recorded: Invoice #{} for school: {} | Plan: {} | Active till: {}",
                 savedPayment.getInvoiceNumber(), schoolId, plan.getPlanType(), endDate);
 
-        // 6. Return response DTO
+        // 6. Send Payment Success & Invoice Email (Async)
+        schoolRepository.findById(schoolId).ifPresent(s -> {
+            subscriptionEmailService.sendPaymentSuccessInvoiceEmail(
+                    s.getEmail(),
+                    s.getSchoolName(),
+                    plan.getDisplayName(),
+                    request.getBillingCycle().name(),
+                    paidAmount,
+                    savedPayment.getInvoiceNumber(),
+                    request.getRazorpayPaymentId(),
+                    endDate
+            );
+        });
+
+        // 7. Return response DTO
         long daysRemaining = ChronoUnit.DAYS.between(today, endDate);
         return SchoolSubscriptionDTO.builder()
                 .id(savedSubscription.getId())

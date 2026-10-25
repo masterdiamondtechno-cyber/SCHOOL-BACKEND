@@ -7,6 +7,7 @@ import com.schoolmanagement.subscription.entity.*;
 import com.schoolmanagement.subscription.entity.SchoolSubscription.SubscriptionStatus;
 import com.schoolmanagement.subscription.entity.SubscriptionPlan.PlanType;
 import com.schoolmanagement.subscription.repository.*;
+import com.schoolmanagement.subscription.service.SubscriptionEmailService;
 import com.schoolmanagement.subscription.service.SubscriptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private final SchoolSubscriptionRepository subscriptionRepo;
     private final PaymentHistoryRepository paymentRepo;
     private final SchoolRepository schoolRepo;
+    private final SubscriptionEmailService subscriptionEmailService;
 
     // ─── Plan Management ────────────────────────────────
 
@@ -85,7 +87,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
         SchoolSubscription saved = subscriptionRepo.save(trial);
 
-        // Keep School entity in sync
+        // Keep School entity in sync & send email
         schoolRepo.findById(schoolId).ifPresent(s -> {
             s.setSubscriptionStatus("TRIAL");
             s.setSubscriptionSource("TRIAL");
@@ -93,6 +95,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             s.setSubscriptionEndDate(trialEnd.atTime(23, 59, 59));
             s.setSubscriptionDuration("14 days");
             schoolRepo.save(s);
+
+            subscriptionEmailService.sendTrialStartedEmail(s.getEmail(), s.getSchoolName(), trialEnd);
         });
 
         log.info("Free trial started for school: {} - Trial ends: {}", schoolId, trialEnd);
@@ -259,10 +263,13 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             schoolRepo.findById(sub.getSchoolId()).ifPresent(s -> {
                 s.setSubscriptionStatus("EXPIRED");
                 schoolRepo.save(s);
+
+                // Auto email: Subscription expired
+                subscriptionEmailService.sendSubscriptionExpiredEmail(
+                        s.getEmail(), s.getSchoolName(), sub.getPlan().getDisplayName(), sub.getEndDate());
             });
 
             log.warn("Subscription EXPIRED for school: {}", sub.getSchoolId());
-            // TODO: Email bhejo — "Aapka subscription expire ho gaya"
         });
 
         log.info("Processed {} expired subscriptions", expired.size());
@@ -279,7 +286,13 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         expiringSoon.forEach(sub -> {
             log.info("Sending renewal reminder to school: {} - Expires: {}",
                     sub.getSchoolId(), sub.getEndDate());
-            // TODO: Email bhejo — "Aapka subscription 5 din mein expire hoga"
+
+            schoolRepo.findById(sub.getSchoolId()).ifPresent(s -> {
+                // Auto email: 5-day renewal reminder
+                subscriptionEmailService.sendRenewalReminderEmail(
+                        s.getEmail(), s.getSchoolName(), sub.getPlan().getDisplayName(),
+                        sub.getEndDate(), REMINDER_DAYS_BEFORE);
+            });
         });
 
         log.info("Sent renewal reminders to {} schools", expiringSoon.size());
