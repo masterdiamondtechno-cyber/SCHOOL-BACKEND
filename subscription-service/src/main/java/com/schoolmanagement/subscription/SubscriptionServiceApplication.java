@@ -9,8 +9,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication(scanBasePackages = {"com.schoolmanagement.subscription", "com.schoolmanagement.Config", "com.schoolmanagement.common"})
-@EntityScan(basePackages = {"com.schoolmanagement.subscription.entity", "com.schoolmanagement.school.entity"})
-@EnableJpaRepositories(basePackages = {"com.schoolmanagement.subscription.repository", "com.schoolmanagement.school.repository"})
+@EntityScan(basePackages = "com.schoolmanagement")
+@EnableJpaRepositories(basePackages = "com.schoolmanagement")
 @EnableDiscoveryClient
 @EnableScheduling
 @EnableAsync

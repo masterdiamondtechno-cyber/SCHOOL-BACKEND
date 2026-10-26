@@ -194,6 +194,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
 
                 <configuration>
+                    <mainClass>com.schoolmanagement.Application</mainClass>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
