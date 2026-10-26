@@ -29,17 +29,26 @@ spring:
           predicates:
             - Path=/api/AddSchool/**, /api/students/**, /api/teachers/**, /api/attendance/**, /api/fees/**, /api/exams/**, /api/timetable/**, /api/academic-year/**, /api/leave/**, /api/notification/**
 
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
       globalcors:
+        add-to-simple-url-handler-mapping: true
         cors-configurations:
           '[/**]':
-            allowedOrigins: "*"
+            allowedOrigins:
+              - "http://localhost:5173"
+              - "http://localhost:3000"
+              - "http://localhost:5174"
+              - "http://127.0.0.1:5173"
             allowedMethods:
               - GET
               - POST
               - PUT
               - DELETE
               - OPTIONS
+              - PATCH
             allowedHeaders: "*"
+            allowCredentials: true
 
 eureka:
   client:
