@@ -183,7 +183,8 @@ public class SchoolController {
 
             response.put("code", 500);
             response.put("status", "FAILED");
-            response.put("message", "Internal Server Error");
+            e.printStackTrace();
+            response.put("message", "Internal Server Error: " + e.getMessage());
             response.put("data", null);
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
@@ -239,7 +240,8 @@ public class SchoolController {
 
             response.put("code", 500);
             response.put("status", "FAILED");
-            response.put("message", "Internal Server Error");
+            e.printStackTrace();
+            response.put("message", "Internal Server Error: " + e.getMessage());
             response.put("data", null);
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
@@ -291,7 +293,8 @@ public class SchoolController {
         } catch (Exception e) {
             response.put("code", 500);
             response.put("status", "FAILED");
-            response.put("message", "Internal Server Error");
+            e.printStackTrace();
+            response.put("message", "Internal Server Error: " + e.getMessage());
             response.put("data", null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
@@ -328,7 +331,8 @@ public class SchoolController {
 
             response.put("code", 500);
             response.put("status", "FAILED");
-            response.put("message", "Internal Server Error");
+            e.printStackTrace();
+            response.put("message", "Internal Server Error: " + e.getMessage());
             response.put("data", null);
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
@@ -396,7 +400,8 @@ public class SchoolController {
 
             response.put("code", 500);
             response.put("status", "FAILED");
-            response.put("message", "Internal Server Error");
+            e.printStackTrace();
+            response.put("message", "Internal Server Error: " + e.getMessage());
             response.put("data", null);
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
@@ -542,7 +547,8 @@ public class SchoolController {
 
             response.put("code", 500);
             response.put("status", "FAILED");
-            response.put("message", "Internal Server Error");
+            e.printStackTrace();
+            response.put("message", "Internal Server Error: " + e.getMessage());
             response.put("data", null);
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);

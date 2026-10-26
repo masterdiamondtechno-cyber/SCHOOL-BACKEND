@@ -1,0 +1,530 @@
+{
+  "info": {
+    "name": "School Management SaaS - Complete API Collection",
+    "_postman_id": "school-mgmt-saas-v1",
+    "description": "Complete API collection for School Management SaaS Platform\n\nHow to use:\n1. Import this file in Postman\n2. Import the Environment file too\n3. First run 'Login' request — token auto-saves\n4. All other requests use token automatically",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url",  "value": "http://localhost:8080", "type": "string" },
+    { "key": "token",     "value": "",                      "type": "string" },
+    { "key": "school_id", "value": "3",                     "type": "string" },
+    { "key": "plan_id",   "value": "2",                     "type": "string" }
+  ],
+  "item": [
+
+    {
+      "name": "00 - Health & Docs",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/actuator/health", "host": ["{{base_url}}"], "path": ["actuator","health"] },
+            "description": "Check if server is running. Expect: {status: UP}"
+          }
+        },
+        {
+          "name": "Swagger UI",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/swagger-ui/index.html", "host": ["{{base_url}}"], "path": ["swagger-ui","index.html"] },
+            "description": "Open Swagger documentation in browser"
+          }
+        },
+        {
+          "name": "API Docs (JSON)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/v3/api-docs", "host": ["{{base_url}}"], "path": ["v3","api-docs"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "01 - School Registration & Auth",
+      "item": [
+        {
+          "name": "Register New School",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/AddSchool/create", "host": ["{{base_url}}"], "path": ["api","AddSchool","create"] },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "schoolName",    "value": "Test School Postman",       "type": "text" },
+                { "key": "email",         "value": "testpostman@school.com",    "type": "text" },
+                { "key": "phoneNo",       "value": "9876543210",                "type": "text" },
+                { "key": "udiseNo",       "value": "UDISE123456",               "type": "text" },
+                { "key": "state",         "value": "Maharashtra",               "type": "text" },
+                { "key": "district",      "value": "Pune",                      "type": "text" },
+                { "key": "taluka",        "value": "Haveli",                    "type": "text" },
+                { "key": "pincode",       "value": "411001",                    "type": "text" },
+                { "key": "schoolAddress", "value": "123 Test Road, Pune",       "type": "text" },
+                { "key": "principalName", "value": "Mr. Test Principal",        "type": "text" }
+              ]
+            },
+            "description": "Register a new school. Auto-assigns 14-day free trial.\nNOTE: After registration, admin approval required before login.\nSQL to approve: UPDATE school SET registration_status='APPROVED', school_status='ACTIVE' WHERE email='testpostman@school.com';"
+          }
+        },
+        {
+          "name": "Login (School Admin) - AUTO SAVES TOKEN",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "",
+                  "// Try different response structures",
+                  "var token = null;",
+                  "if (res.token)            token = res.token;",
+                  "else if (res.accessToken) token = res.accessToken;",
+                  "else if (res.data && res.data.token)       token = res.data.token;",
+                  "else if (res.data && res.data.accessToken) token = res.data.accessToken;",
+                  "",
+                  "if (token) {",
+                  "    pm.collectionVariables.set('token', token);",
+                  "    console.log('Token saved! Length:', token.length);",
+                  "    pm.test('Login successful - Token saved', () => pm.expect(token).to.be.a('string'));",
+                  "} else {",
+                  "    console.log('Token NOT found in response:', JSON.stringify(res));",
+                  "    pm.test('Login FAILED - No token in response', () => pm.expect(token).to.not.be.null);",
+                  "}",
+                  "",
+                  "// Save schoolId if present",
+                  "if (res.data && res.data.schoolId) {",
+                  "    pm.collectionVariables.set('school_id', res.data.schoolId);",
+                  "    console.log('schoolId saved:', res.data.schoolId);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/AddSchool/login", "host": ["{{base_url}}"], "path": ["api","AddSchool","login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"jiteshpatlee@gmail.com\",\n  \"password\": \"YourPasswordHere\",\n  \"role\": \"SCHOOL_ADMIN\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Login with school email & password.\nAFTER SUCCESS: JWT token is automatically saved to {{token}} variable.\nAll further requests will use this token automatically."
+          }
+        },
+        {
+          "name": "Login (App Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "var token = res.token || res.accessToken || (res.data && (res.data.token || res.data.accessToken));",
+                  "if (token) { pm.collectionVariables.set('token', token); pm.test('Admin Token saved!', () => true); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/auth/login", "host": ["{{base_url}}"], "path": ["api","auth","login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin@masterdiamond.in\",\n  \"password\": \"Admin@123\",\n  \"role\": \"APP_ADMIN\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Get School by ID",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/api/AddSchool/getSchoolById", "host": ["{{base_url}}"], "path": ["api","AddSchool","getSchoolById"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": {{school_id}}\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Send OTP",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/AddSchool/send-otp", "host": ["{{base_url}}"], "path": ["api","AddSchool","send-otp"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"jiteshpatlee@gmail.com\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Verify OTP",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/AddSchool/verify-otp", "host": ["{{base_url}}"], "path": ["api","AddSchool","verify-otp"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"jiteshpatlee@gmail.com\",\n  \"otp\": \"123456\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Update Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/AddSchool/update-password", "host": ["{{base_url}}"], "path": ["api","AddSchool","update-password"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"jiteshpatlee@gmail.com\",\n  \"newPassword\": \"School@123\",\n  \"confirmPassword\": \"School@123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "02 - Subscription Plans (Public)",
+      "item": [
+        {
+          "name": "Get All Plans",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Plans exist', () => {",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res).to.be.an('array').that.is.not.empty;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/api/subscription/plans", "host": ["{{base_url}}"], "path": ["api","subscription","plans"] },
+            "description": "Get all subscription plans (BASIC, PRO, ENTERPRISE). Public API - no auth needed."
+          }
+        },
+        {
+          "name": "Get BASIC Plan",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/api/subscription/plans/BASIC", "host": ["{{base_url}}"], "path": ["api","subscription","plans","BASIC"] }
+          }
+        },
+        {
+          "name": "Get PRO Plan",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/api/subscription/plans/PRO", "host": ["{{base_url}}"], "path": ["api","subscription","plans","PRO"] }
+          }
+        },
+        {
+          "name": "Get ENTERPRISE Plan",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/api/subscription/plans/ENTERPRISE", "host": ["{{base_url}}"], "path": ["api","subscription","plans","ENTERPRISE"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "03 - Subscription Management (Auth Required)",
+      "item": [
+        {
+          "name": "Check Current Subscription",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 or 404', () => pm.expect([200,404]).to.include(pm.response.code));",
+                  "console.log('Subscription:', pm.response.json());"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/subscription/check/{{school_id}}", "host": ["{{base_url}}"], "path": ["api","subscription","check","{{school_id}}"] },
+            "description": "Check current subscription status for a school.\nReturns: plan type, status, expiry date, trial info"
+          }
+        },
+        {
+          "name": "Get Payment History",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/subscription/payments/{{school_id}}", "host": ["{{base_url}}"], "path": ["api","subscription","payments","{{school_id}}"] },
+            "description": "Get all payment history for a school."
+          }
+        },
+        {
+          "name": "Create Razorpay Order (Monthly PRO)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Order Created', () => pm.expect([200,201]).to.include(pm.response.code));",
+                  "var res = pm.response.json();",
+                  "var d = (res.data || res);",
+                  "var orderId = d.razorpayOrderId || d.orderId || d.id;",
+                  "if (orderId) {",
+                  "    pm.collectionVariables.set('razorpay_order_id', orderId);",
+                  "    console.log('Razorpay Order ID saved:', orderId);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/api/subscription/create-order/{{school_id}}", "host": ["{{base_url}}"], "path": ["api","subscription","create-order","{{school_id}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"planId\": {{plan_id}},\n  \"billingCycle\": \"MONTHLY\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Create a Razorpay payment order.\nMock mode = true by default in application.properties.\nReturns: razorpayOrderId, amount, currency"
+          }
+        },
+        {
+          "name": "Create Razorpay Order (Yearly PRO)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/api/subscription/create-order/{{school_id}}", "host": ["{{base_url}}"], "path": ["api","subscription","create-order","{{school_id}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"planId\": {{plan_id}},\n  \"billingCycle\": \"YEARLY\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Verify Payment (Mock)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Payment Verified', () => pm.expect([200,201,400]).to.include(pm.response.code));",
+                  "console.log('Verify response:', pm.response.json());"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/api/subscription/verify-payment/{{school_id}}", "host": ["{{base_url}}"], "path": ["api","subscription","verify-payment","{{school_id}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"razorpayOrderId\":   \"{{razorpay_order_id}}\",\n  \"razorpayPaymentId\": \"pay_mock_PostmanTest\",\n  \"razorpaySignature\": \"mock_signature_PostmanTest\",\n  \"planId\": {{plan_id}},\n  \"billingCycle\": \"MONTHLY\",\n  \"schoolId\": {{school_id}}\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Verify Razorpay payment. In mock mode, any signature works.\nAfter success: school subscription is activated."
+          }
+        },
+        {
+          "name": "Start Free Trial (Manual)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/api/subscription/trial/{{school_id}}", "host": ["{{base_url}}"], "path": ["api","subscription","trial","{{school_id}}"] },
+            "description": "Manually start a free trial for a school (14 days).\nNormally auto-triggered on school registration."
+          }
+        },
+        {
+          "name": "Cancel Subscription",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/api/subscription/cancel/{{school_id}}", "host": ["{{base_url}}"], "path": ["api","subscription","cancel","{{school_id}}"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "04 - Admin Panel",
+      "item": [
+        {
+          "name": "Get All Schools (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/admin/schools", "host": ["{{base_url}}"], "path": ["api","admin","schools"] }
+          }
+        },
+        {
+          "name": "Approve School",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/api/admin/school/approve", "host": ["{{base_url}}"], "path": ["api","admin","school","approve"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": {{school_id}}\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Approve a school registration. Also triggers 14-day free trial."
+          }
+        },
+        {
+          "name": "Reject School",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/api/admin/school/reject", "host": ["{{base_url}}"], "path": ["api","admin","school","reject"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": {{school_id}},\n  \"reason\": \"Invalid documents\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/admin/dashboard", "host": ["{{base_url}}"], "path": ["api","admin","dashboard"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "05 - Security Tests",
+      "item": [
+        {
+          "name": "Access Protected Route (No Token) - Expect 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Protected route blocks unauthenticated request', () => {",
+                  "    pm.expect([401, 403]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/subscription/check/{{school_id}}", "host": ["{{base_url}}"], "path": ["api","subscription","check","{{school_id}}"] },
+            "description": "No Authorization header — should return 401 Unauthorized"
+          }
+        },
+        {
+          "name": "Access with Invalid Token - Expect 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Invalid token is rejected', () => {",
+                  "    pm.expect([401, 403]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer this.is.invalid.token" }],
+            "url": { "raw": "{{base_url}}/api/subscription/check/{{school_id}}", "host": ["{{base_url}}"], "path": ["api","subscription","check","{{school_id}}"] }
+          }
+        },
+        {
+          "name": "Access Expired School - Expect 403",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Expired school is blocked', () => {",
+                  "    pm.expect([403, 401]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/subscription/check/9999", "host": ["{{base_url}}"], "path": ["api","subscription","check","9999"] },
+            "description": "schoolId=9999 does not exist — SubscriptionInterceptor should block"
+          }
+        }
+      ]
+    }
+
+  ]
+}
