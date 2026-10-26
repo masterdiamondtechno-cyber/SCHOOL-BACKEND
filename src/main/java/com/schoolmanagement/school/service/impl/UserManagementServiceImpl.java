@@ -1,4 +1,4 @@
-package com.schoolmanagement.school.serviceImpl;
+package com.schoolmanagement.school.service.impl;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -130,3 +130,4 @@ public class UserManagementServiceImpl implements UserManagementService {
         return users;
     }
 }
+

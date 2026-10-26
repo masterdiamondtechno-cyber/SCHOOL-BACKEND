@@ -1,4 +1,4 @@
-package com.schoolmanagement.school.serviceImpl;
+package com.schoolmanagement.school.service.impl;
 
 import java.security.SecureRandom;
 import java.time.LocalDate;
@@ -645,3 +645,4 @@ public class AddStudentServiceImpl implements AddStudentService {
         return count;
     }
 }
+

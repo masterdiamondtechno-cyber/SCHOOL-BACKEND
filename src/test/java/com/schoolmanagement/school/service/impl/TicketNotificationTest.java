@@ -1,4 +1,4 @@
-package com.schoolmanagement.school.serviceImpl;
+﻿package C:.Users.Asus.Desktop.school-management-restructured.src.test.com.schoolmanagement.school.service.impl;
 
 import com.schoolmanagement.admin.service.EmailService;
 import com.schoolmanagement.school.dto.TicketRequestDTO;
@@ -245,3 +245,5 @@ public class TicketNotificationTest {
         assertEquals(TicketStatus.OPEN, ticketOpt.get().getStatus());
     }
 }
+
+

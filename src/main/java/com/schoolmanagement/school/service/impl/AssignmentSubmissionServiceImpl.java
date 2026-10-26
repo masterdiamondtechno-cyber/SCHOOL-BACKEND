@@ -1,4 +1,4 @@
-package com.schoolmanagement.school.serviceImpl;
+package com.schoolmanagement.school.service.impl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -236,3 +236,4 @@ public class AssignmentSubmissionServiceImpl implements AssignmentSubmissionServ
         submissionRepository.save(submission);
     }
 }
+

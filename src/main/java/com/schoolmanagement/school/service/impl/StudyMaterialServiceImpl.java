@@ -1,4 +1,4 @@
-package com.schoolmanagement.school.serviceImpl;
+package com.schoolmanagement.school.service.impl;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -472,3 +472,4 @@ public class StudyMaterialServiceImpl implements StudyMaterialService {
         return stats;
     }
 }
+

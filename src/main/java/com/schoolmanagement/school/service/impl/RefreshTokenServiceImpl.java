@@ -1,4 +1,4 @@
-package com.schoolmanagement.school.serviceImpl;
+package com.schoolmanagement.school.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -80,3 +80,4 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         refreshTokenRepository.deleteByUserIdAndUserType(userId, userType);
     }
 }
+

@@ -6,8 +6,8 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "subscription_plans")
+@Entity(name = "SaasSubscriptionPlan")
+@Table(name = "saas_subscription_plans")
 @Getter
 @Setter
 @NoArgsConstructor

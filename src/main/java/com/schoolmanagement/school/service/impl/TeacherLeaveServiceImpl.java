@@ -1,4 +1,4 @@
-package com.schoolmanagement.school.serviceImpl;
+package com.schoolmanagement.school.service.impl;
 
 import com.schoolmanagement.school.dto.TeacherLeaveDTO;
 import com.schoolmanagement.school.entity.AcademicYear;

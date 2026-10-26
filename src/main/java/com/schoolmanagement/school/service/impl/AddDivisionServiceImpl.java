@@ -1,4 +1,4 @@
-package com.schoolmanagement.school.serviceImpl;
+package com.schoolmanagement.school.service.impl;
 
 import java.util.List;
 
@@ -171,3 +171,4 @@ public class AddDivisionServiceImpl implements AddDivisionService {
         repository.deleteById(divisionId);
     }
 }
+

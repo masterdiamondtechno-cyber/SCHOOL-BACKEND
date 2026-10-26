@@ -1,4 +1,4 @@
-package com.schoolmanagement.school.serviceImpl;
+package com.schoolmanagement.school.service.impl;
 
 import java.io.File;
 import java.io.IOException;
@@ -652,3 +652,4 @@ public class RecordedLectureServiceImpl implements RecordedLectureService {
         return stats;
     }
 }
+

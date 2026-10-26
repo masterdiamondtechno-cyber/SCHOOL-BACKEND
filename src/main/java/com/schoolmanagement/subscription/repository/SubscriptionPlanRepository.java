@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+@Repository("saasSubscriptionPlanRepository")
 public interface SubscriptionPlanRepository extends JpaRepository<SubscriptionPlan, Long> {
 
     // Plan type se dhundho (BASIC, PRO, ENTERPRISE)

@@ -1,4 +1,4 @@
-package com.schoolmanagement;
+﻿package C:.Users.Asus.Desktop.school-management-restructured.src.test.com.schoolmanagement;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -80,3 +80,4 @@ class ManualSubscriptionTest {
         assertTrue(school.isSubscriptionExpired(), "Null source should fallback to expired trial check");
     }
 }
+

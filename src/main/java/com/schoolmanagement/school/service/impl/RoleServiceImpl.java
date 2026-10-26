@@ -1,4 +1,4 @@
-package com.schoolmanagement.school.serviceImpl;
+package com.schoolmanagement.school.service.impl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -152,3 +152,4 @@ public class RoleServiceImpl implements RoleService {
 //        return response;
 //    }
 }
+

@@ -1,4 +1,4 @@
-package com.schoolmanagement.school.serviceImpl;
+package com.schoolmanagement.school.service.impl;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -406,3 +406,4 @@ public class SyllabusServiceImpl implements SyllabusService {
         syllabusRepository.save(syllabus);
     }
 }
+

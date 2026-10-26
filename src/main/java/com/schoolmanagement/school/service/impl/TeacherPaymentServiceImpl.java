@@ -1,4 +1,4 @@
-package com.schoolmanagement.school.serviceImpl;
+package com.schoolmanagement.school.service.impl;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -314,3 +314,4 @@ public class TeacherPaymentServiceImpl implements TeacherPaymentService {
         return month.substring(0, 1).toUpperCase() + month.substring(1).toLowerCase() + " " + year;
     }
 }
+

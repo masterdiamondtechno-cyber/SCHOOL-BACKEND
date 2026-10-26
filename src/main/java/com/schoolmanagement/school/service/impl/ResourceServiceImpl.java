@@ -1,4 +1,4 @@
-package com.schoolmanagement.school.serviceImpl;
+package com.schoolmanagement.school.service.impl;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -173,3 +173,4 @@ public class ResourceServiceImpl implements ResourceService {
                 .stream().map(this::toDTO).collect(Collectors.toList());
     }
 }
+

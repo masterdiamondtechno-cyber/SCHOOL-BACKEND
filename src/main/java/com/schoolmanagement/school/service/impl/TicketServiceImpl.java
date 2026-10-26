@@ -1,4 +1,4 @@
-package com.schoolmanagement.school.serviceImpl;
+package com.schoolmanagement.school.service.impl;
 
 import com.schoolmanagement.admin.service.EmailService;
 import com.schoolmanagement.school.dto.*;
@@ -344,3 +344,4 @@ public class TicketServiceImpl implements TicketService {
         return dto;
     }
 }
+

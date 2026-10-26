@@ -1,4 +1,4 @@
-package com.schoolmanagement.school.serviceImpl;
+package com.schoolmanagement.school.service.impl;
 
 import com.schoolmanagement.school.dto.StudentLeaveDTO;
 import com.schoolmanagement.school.entity.AcademicYear;
@@ -441,3 +441,4 @@ public class StudentLeaveServiceImpl implements StudentLeaveService {
         return list.stream().map(this::toMap).collect(Collectors.toList());
     }
 }
+

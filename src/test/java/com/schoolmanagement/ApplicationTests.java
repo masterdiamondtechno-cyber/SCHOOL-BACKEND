@@ -1,4 +1,4 @@
-package com.schoolmanagement;
+﻿package C:.Users.Asus.Desktop.school-management-restructured.src.test.com.schoolmanagement;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,4 +30,5 @@ class ApplicationTests {
 	}
 
 }
+
 

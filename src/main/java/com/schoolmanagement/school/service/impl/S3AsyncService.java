@@ -1,4 +1,4 @@
-package com.schoolmanagement.school.serviceImpl;
+package com.schoolmanagement.school.service.impl;
 
 import java.io.File;
 import java.io.IOException;
@@ -103,3 +103,4 @@ public class S3AsyncService {
         }
     }
 }
+

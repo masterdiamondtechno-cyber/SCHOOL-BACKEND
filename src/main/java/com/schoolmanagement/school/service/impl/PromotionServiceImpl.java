@@ -1,4 +1,4 @@
-package com.schoolmanagement.school.serviceImpl;
+package com.schoolmanagement.school.service.impl;
 
 import java.util.List;
 import java.util.Optional;
@@ -126,3 +126,4 @@ public class PromotionServiceImpl implements PromotionService {
         }
     }
 }
+
