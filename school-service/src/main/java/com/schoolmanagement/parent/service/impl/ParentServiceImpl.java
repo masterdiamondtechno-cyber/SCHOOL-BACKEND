@@ -1,5 +1,7 @@
 package com.schoolmanagement.parent.service.impl;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -8,14 +10,19 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.schoolmanagement.parent.dto.AcademicProgressDTO;
+import com.schoolmanagement.parent.dto.ParentDashboardDTO;
 import com.schoolmanagement.parent.dto.SubjectProgressDTO;
 import com.schoolmanagement.parent.service.ParentService;
 import com.schoolmanagement.school.entity.AddStudent;
+import com.schoolmanagement.school.entity.Attendance;
 import com.schoolmanagement.school.entity.Exam;
 import com.schoolmanagement.school.entity.ExamMarks;
+import com.schoolmanagement.school.entity.Notification;
 import com.schoolmanagement.school.repository.AddStudentRepository;
+import com.schoolmanagement.school.repository.AttendanceRepository;
 import com.schoolmanagement.school.repository.ExamMarksRepository;
 import com.schoolmanagement.school.repository.ExamRepository;
+import com.schoolmanagement.school.repository.NotificationRepository;
 
 @Service
 public class ParentServiceImpl implements ParentService {
@@ -23,14 +30,131 @@ public class ParentServiceImpl implements ParentService {
     private final AddStudentRepository studentRepository;
     private final ExamMarksRepository examMarksRepository;
     private final ExamRepository examRepository;
+    private final AttendanceRepository attendanceRepository;
+    private final NotificationRepository notificationRepository;
 
     public ParentServiceImpl(AddStudentRepository studentRepository,
                              ExamMarksRepository examMarksRepository,
-                             ExamRepository examRepository) {
+                             ExamRepository examRepository,
+                             AttendanceRepository attendanceRepository,
+                             NotificationRepository notificationRepository) {
         this.studentRepository = studentRepository;
         this.examMarksRepository = examMarksRepository;
         this.examRepository = examRepository;
+        this.attendanceRepository = attendanceRepository;
+        this.notificationRepository = notificationRepository;
     }
+
+    // ===== Dashboard Overview =====
+
+    @Override
+    public ParentDashboardDTO getDashboardOverview(Long schoolId, Long studentId, Long academicYearId) {
+
+        // 1. Fetch the student
+        AddStudent student = studentRepository.findByIdAndSchool_SchoolId(studentId, schoolId)
+                .orElseThrow(() -> new RuntimeException("Student not found for studentId=" + studentId));
+
+        // 2. Student basic info
+        String studentName = (student.getFirstName() != null ? student.getFirstName() : "")
+                + " " + (student.getLastName() != null ? student.getLastName() : "");
+        String standard = student.getAddStandard() != null ? student.getAddStandard().getStandard() : "N/A";
+        String division = student.getAddDivision() != null ? student.getAddDivision().getDivisionName() : "N/A";
+        String rollNumber = student.getRollNumber() != null ? student.getRollNumber() : "";
+        String dob = student.getDateOfBirth() != null
+                ? student.getDateOfBirth().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
+                : "";
+        String profilePhoto = student.getProfilePhoto();
+
+        // 3. Today's Attendance
+        LocalDate today = LocalDate.now();
+        List<Attendance> todayRecords = attendanceRepository
+                .findBySchool_SchoolIdAndAddStudent_IdAndAttendanceDateBetween(schoolId, studentId, today, today);
+
+        String todayStatus = "NOT_MARKED";
+        if (!todayRecords.isEmpty()) {
+            boolean hasPresent = todayRecords.stream()
+                    .anyMatch(a -> "PRESENT".equalsIgnoreCase(a.getStatus()));
+            boolean hasAbsent = todayRecords.stream()
+                    .anyMatch(a -> "ABSENT".equalsIgnoreCase(a.getStatus()));
+            if (hasPresent) {
+                todayStatus = "PRESENT";
+            } else if (hasAbsent) {
+                todayStatus = "ABSENT";
+            }
+        }
+
+        // 4. Overall Attendance Counts (academic year filtered)
+        long totalDays = attendanceRepository
+                .countBySchool_SchoolIdAndAddStudent_Id(schoolId, studentId);
+        long presentDays = attendanceRepository
+                .countBySchool_SchoolIdAndAddStudent_IdAndStatus(schoolId, studentId, "PRESENT");
+        long absentDays = totalDays - presentDays;
+        double attendancePct = totalDays > 0
+                ? Math.round((presentDays * 100.0 / totalDays) * 10.0) / 10.0
+                : 0.0;
+
+        // 5. Recent Marks (latest 3 marks across exams for this student/academicYear)
+        List<ExamMarks> allMarks = examMarksRepository
+                .findByAddStudent_IdAndSchool_SchoolIdAndAcademicYear_AcademicYearId(studentId, schoolId, academicYearId);
+
+        List<ParentDashboardDTO.RecentMarkDTO> recentMarks = allMarks.stream()
+                .filter(m -> m.getExam() != null && m.getAddSubject() != null
+                        && m.getMarksObtained() != null && m.getMaxMarks() != null)
+                .sorted(Comparator.comparing(
+                        m -> m.getExam().getExamDate() != null ? m.getExam().getExamDate() : LocalDate.MIN,
+                        Comparator.reverseOrder()))
+                .limit(5)
+                .map(m -> {
+                    double pct = m.getMaxMarks() > 0
+                            ? (m.getMarksObtained() / m.getMaxMarks()) * 100 : 0;
+                    return ParentDashboardDTO.RecentMarkDTO.builder()
+                            .examName(m.getExam().getExamName())
+                            .subjectName(m.getAddSubject().getSubjectName())
+                            .marksObtained(m.getMarksObtained())
+                            .maxMarks(m.getMaxMarks())
+                            .grade(calculateGrade(pct))
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        // 6. Notices (latest 3 active notifications for this school)
+        List<Notification> allNotices = notificationRepository.findBySchool_SchoolIdAndIsActiveTrue(schoolId);
+        List<ParentDashboardDTO.NoticeDTO> notices = allNotices.stream()
+                .sorted(Comparator.comparing(
+                        n -> n.getSentAt() != null ? n.getSentAt() : java.time.LocalDateTime.MIN,
+                        Comparator.reverseOrder()))
+                .limit(3)
+                .map(n -> ParentDashboardDTO.NoticeDTO.builder()
+                        .title(n.getTitle())
+                        .message(n.getMessage())
+                        .type(n.getType())
+                        .sentAt(n.getSentAt() != null
+                                ? n.getSentAt().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"))
+                                : "")
+                        .build())
+                .collect(Collectors.toList());
+
+        // 7. Build and return
+        return ParentDashboardDTO.builder()
+                .studentDbId(studentId)
+                .studentName(studentName.trim())
+                .studentUid(student.getStudentId())
+                .rollNumber(rollNumber)
+                .dateOfBirth(dob)
+                .standard(standard)
+                .division(division)
+                .profilePhoto(profilePhoto)
+                .todayAttendanceStatus(todayStatus)
+                .totalAttendanceDays(totalDays)
+                .presentDays(presentDays)
+                .absentDays(absentDays)
+                .attendancePercentage(attendancePct)
+                .recentMarks(recentMarks)
+                .notices(notices)
+                .build();
+    }
+
+    // ===== Report Card =====
 
     @Override
     public AcademicProgressDTO getReportCard(Long schoolId, Long academicYearId, Long studentId) {
@@ -51,7 +175,6 @@ public class ParentServiceImpl implements ParentService {
                 .findBySchool_SchoolIdAndAcademicYear_AcademicYearIdAndAddStandard_StandardIdAndAddDivision_DivisionId(
                         schoolId, academicYearId, standardId, divisionId);
 
-        // Pick the latest completed exam by examDate
         Exam latestExam = exams.stream()
                 .filter(e -> "COMPLETED".equalsIgnoreCase(e.getStatus()))
                 .max(Comparator.comparing(Exam::getExamDate, Comparator.nullsLast(Comparator.naturalOrder())))
@@ -89,12 +212,10 @@ public class ParentServiceImpl implements ParentService {
             dto.setScoreObtained(mark.getMarksObtained());
             dto.setTotalMarks(mark.getMaxMarks());
 
-            // Grade calculation
             double percentage = (mark.getMarksObtained() / mark.getMaxMarks()) * 100;
             dto.setGrade(calculateGrade(percentage));
             dto.setStatus(percentage >= 35 ? "Pass" : "Fail");
 
-            // Class average for this subject
             Long subjectId = mark.getAddSubject().getSubjectId();
             double classAvg = allExamMarks.stream()
                     .filter(m -> m.getAddSubject() != null
@@ -110,13 +231,12 @@ public class ParentServiceImpl implements ParentService {
             studentTotalMax += mark.getMaxMarks();
         }
 
-        // 6. Calculate overall percentage for standing
+        // 6. Overall percentage
         double overallPercentage = studentTotalMax > 0
                 ? Math.round((studentTotalObtained / studentTotalMax) * 100 * 10.0) / 10.0
                 : 0;
 
-        // 7. Calculate percentile rank among all students in this exam
-        // Group all marks by student and compute each student's total percentage
+        // 7. Percentile rank
         var studentTotals = allExamMarks.stream()
                 .filter(m -> m.getAddStudent() != null && m.getMarksObtained() != null && m.getMaxMarks() != null
                         && m.getMaxMarks() > 0)
@@ -131,13 +251,12 @@ public class ParentServiceImpl implements ParentService {
             }
         }
 
-        // Count how many students scored less than this student
         long belowCount = allPercentages.stream().filter(p -> p < overallPercentage).count();
         double percentileRank = allPercentages.size() > 0
                 ? Math.round((belowCount * 100.0 / allPercentages.size()) * 10.0) / 10.0
                 : 0;
 
-        // 8. Build the response
+        // 8. Build response
         AcademicProgressDTO response = new AcademicProgressDTO();
         response.setTermLabel(latestExam.getExamName() + " (Current)");
         response.setStanding(calculateStanding(overallPercentage));

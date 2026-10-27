@@ -235,7 +235,8 @@ public class SecurityConfig {
 
                                                 // ── Parent endpoints ─────────────────────────────────────────
                                                 .requestMatchers(
-                                                                "/parent/report-card")
+                                                                "/parent/report-card",
+                                                                "/parent/dashboard-overview")
                                                 .hasAnyAuthority("ROLE_SCHOOL", "ROLE_PARENT")
 
                                                 // ── School + Teacher + Student + Admin ───────────────────────

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.schoolmanagement.parent.dto.AcademicProgressDTO;
+import com.schoolmanagement.parent.dto.ParentDashboardDTO;
 import com.schoolmanagement.parent.dto.StudentReportRequestDTO;
 import com.schoolmanagement.parent.service.ParentService;
 
@@ -31,6 +32,34 @@ public class ParentController {
         r.put("message", message);
         r.put("data", data);
         return r;
+    }
+
+    // ===== Dashboard Overview =====
+
+    @PostMapping("/dashboard-overview")
+    public ResponseEntity<Map<String, Object>> getDashboardOverview(@RequestBody Map<String, Long> body) {
+        try {
+            Long schoolId = body.get("schoolId");
+            Long studentId = body.get("studentId");
+            Long academicYearId = body.get("academicYearId");
+
+            if (schoolId == null)
+                return ResponseEntity.badRequest().body(build(400, "FAILED", "'schoolId' is required", null));
+            if (studentId == null)
+                return ResponseEntity.badRequest().body(build(400, "FAILED", "'studentId' is required", null));
+            if (academicYearId == null)
+                return ResponseEntity.badRequest().body(build(400, "FAILED", "'academicYearId' is required", null));
+
+            ParentDashboardDTO result = parentService.getDashboardOverview(schoolId, studentId, academicYearId);
+
+            return ResponseEntity.ok(build(200, "SUCCESS", "Dashboard overview fetched successfully", result));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(build(404, "FAILED", e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(build(500, "FAILED", "Internal server error: " + e.getMessage(), null));
+        }
     }
 
     // ===== Report Card =====
