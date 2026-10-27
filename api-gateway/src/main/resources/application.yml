@@ -27,7 +27,7 @@ spring:
         - id: school-service
           uri: lb://school-service
           predicates:
-            - Path=/api/AddSchool/**, /api/students/**, /api/teachers/**, /api/attendance/**, /api/fees/**, /api/exams/**, /api/timetable/**, /api/academic-year/**, /api/leave/**, /api/notification/**, /api/app_admin/**, /api/owner/**, /api/dashboard/**
+            - Path=/api/AddSchool/**, /api/students/**, /api/teachers/**, /api/attendance/**, /api/fees/**, /api/exams/**, /api/timetable/**, /api/academic-year/**, /api/leave/**, /api/notification/**, /api/app_admin/**, /api/owner/**, /api/dashboard/**, /api/role/**, /api/master-setup/**, /api/admin/**, /api/system/**, /api/status/**, /api/public/**, /academicYear/**, /division/**, /standard/**, /student/**, /subject/**, /teacher/**, /attendance/**, /fee/**, /exam/**, /timetable/**, /student-leave/**, /teacher-leave/**, /teacher-payment/**, /study-material/**, /syllabus/**, /recorded-lecture/**, /promotion/**, /employee/**, /excel/**, /dashboard/**, /tickets/**, /notification/**, /usermanagement/**, /workspace/**, /parent/**, /owner/**
 
       default-filters:
         - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
