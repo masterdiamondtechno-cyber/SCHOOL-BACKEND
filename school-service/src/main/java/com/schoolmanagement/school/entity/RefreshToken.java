@@ -33,7 +33,7 @@ public class RefreshToken {
     @Column(name = "academic_year_id")
     private Long academicYearId;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String email;
 
     @Column(nullable = false)

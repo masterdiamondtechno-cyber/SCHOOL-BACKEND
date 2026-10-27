@@ -18,4 +18,8 @@ public interface ParentTeacherMessageRepository extends JpaRepository<ParentTeac
 
     // All conversations for a specific teacher
     List<ParentTeacherMessage> findBySchool_SchoolIdAndTeacher_IdOrderBySentAtDesc(Long schoolId, Long teacherId);
+
+    // Messages relevant to teacher: either specifically for this teacher or general parent queries with teacher null
+    List<ParentTeacherMessage> findBySchool_SchoolIdAndTeacher_IdOrSchool_SchoolIdAndTeacherIsNullOrderBySentAtDesc(
+            Long schoolId1, Long teacherId, Long schoolId2);
 }

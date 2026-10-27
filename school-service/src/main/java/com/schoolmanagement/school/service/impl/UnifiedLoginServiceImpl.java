@@ -124,9 +124,17 @@ public class UnifiedLoginServiceImpl implements UnifiedLoginService {
             if (student.getSchool() != null && !"ACTIVE".equalsIgnoreCase(student.getSchool().getSchoolStatus()))
                 throw new RuntimeException("School is Inactive");
 
-            String accessToken = jwtUtil.generateToken(student.getEmailId(), buildStudentClaims(student));
+            String studentIdentifier = (student.getEmailId() != null && !student.getEmailId().isBlank())
+                    ? student.getEmailId()
+                    : (student.getAadharNumber() != null && !student.getAadharNumber().isBlank()
+                            ? student.getAadharNumber()
+                            : (student.getStudentId() != null && !student.getStudentId().isBlank()
+                                    ? student.getStudentId()
+                                    : "student_" + student.getId()));
+
+            String accessToken = jwtUtil.generateToken(studentIdentifier, buildStudentClaims(student));
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(
-                    student.getId(), "STUDENT", student.getEmailId(),
+                    student.getId(), "STUDENT", studentIdentifier,
                     student.getSchool() != null ? student.getSchool().getSchoolId() : null,
                     student.getAcademicYear() != null ? student.getAcademicYear().getAcademicYearId() : null);
 

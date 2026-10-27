@@ -26,7 +26,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         refreshToken.setToken(UUID.randomUUID().toString());
         refreshToken.setUserId(userId);
         refreshToken.setUserType(userType);
-        refreshToken.setEmail(email);
+        refreshToken.setEmail(email != null && !email.isBlank() ? email : (userType.toLowerCase() + "_" + userId + "@system.local"));
         refreshToken.setSchoolId(schoolId);
         refreshToken.setAcademicYearId(academicYearId);
         refreshToken.setExpiry(LocalDateTime.now().plusDays(REFRESH_TOKEN_EXPIRY_DAYS));

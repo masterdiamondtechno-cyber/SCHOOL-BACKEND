@@ -322,8 +322,8 @@ public class ParentServiceImpl implements ParentService {
     public List<ParentTeacherMessageDTO> getTeacherMessages(Long schoolId, Long teacherId) {
         List<ParentTeacherMessage> list;
         if (teacherId != null) {
-            list = messageRepository.findBySchool_SchoolIdAndTeacher_IdOrderBySentAtDesc(schoolId, teacherId);
-            // If empty, return all school messages so teacher can see queries from their classes
+            list = messageRepository.findBySchool_SchoolIdAndTeacher_IdOrSchool_SchoolIdAndTeacherIsNullOrderBySentAtDesc(
+                    schoolId, teacherId, schoolId);
             if (list.isEmpty()) {
                 list = messageRepository.findBySchool_SchoolIdOrderBySentAtDesc(schoolId);
             }
