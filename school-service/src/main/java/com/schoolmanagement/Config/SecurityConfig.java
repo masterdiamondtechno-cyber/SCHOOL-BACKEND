@@ -212,8 +212,7 @@ public class SecurityConfig {
                                                                 "/exam/getByBatch",
                                                                 "/exam/hallTicket",
                                                                 "/exam/marks/getByExam",
-                                                                "/notification/getActive",
-                                                                "/timetable/getByBatch",
+                                                                                                                                "/timetable/getByBatch",
                                                                 "/timetable/getByClass",
                                                                 "/timetable/getBySchool",
                                                                 "/student-leave/getById",
@@ -223,6 +222,7 @@ public class SecurityConfig {
                                                 // ── School + Teacher + Student + Parent ──────────────────────
                                                 .requestMatchers(
                                                                 "/attendance/getByStudent",
+                                                                "/notification/getActive",
                                                                 "/exam/getByStudent",
                                                                 "/exam/marks/getByStudent",
                                                                 "/fee/payment/getByStudent",
