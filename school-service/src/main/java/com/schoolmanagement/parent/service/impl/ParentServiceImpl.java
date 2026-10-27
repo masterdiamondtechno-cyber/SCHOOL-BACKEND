@@ -11,18 +11,26 @@ import org.springframework.stereotype.Service;
 
 import com.schoolmanagement.parent.dto.AcademicProgressDTO;
 import com.schoolmanagement.parent.dto.ParentDashboardDTO;
+import com.schoolmanagement.parent.dto.ParentTeacherMessageDTO;
+import com.schoolmanagement.parent.dto.SendMessageRequestDTO;
 import com.schoolmanagement.parent.dto.SubjectProgressDTO;
+import com.schoolmanagement.parent.entity.ParentTeacherMessage;
+import com.schoolmanagement.parent.repository.ParentTeacherMessageRepository;
 import com.schoolmanagement.parent.service.ParentService;
 import com.schoolmanagement.school.entity.AddStudent;
+import com.schoolmanagement.school.entity.AddTeacher;
 import com.schoolmanagement.school.entity.Attendance;
 import com.schoolmanagement.school.entity.Exam;
 import com.schoolmanagement.school.entity.ExamMarks;
 import com.schoolmanagement.school.entity.Notification;
+import com.schoolmanagement.school.entity.School;
 import com.schoolmanagement.school.repository.AddStudentRepository;
+import com.schoolmanagement.school.repository.AddTeacherRepository;
 import com.schoolmanagement.school.repository.AttendanceRepository;
 import com.schoolmanagement.school.repository.ExamMarksRepository;
 import com.schoolmanagement.school.repository.ExamRepository;
 import com.schoolmanagement.school.repository.NotificationRepository;
+import com.schoolmanagement.school.repository.SchoolRepository;
 
 @Service
 public class ParentServiceImpl implements ParentService {
@@ -32,20 +40,29 @@ public class ParentServiceImpl implements ParentService {
     private final ExamRepository examRepository;
     private final AttendanceRepository attendanceRepository;
     private final NotificationRepository notificationRepository;
+    private final ParentTeacherMessageRepository messageRepository;
+    private final AddTeacherRepository teacherRepository;
+    private final SchoolRepository schoolRepository;
 
     public ParentServiceImpl(AddStudentRepository studentRepository,
                              ExamMarksRepository examMarksRepository,
                              ExamRepository examRepository,
                              AttendanceRepository attendanceRepository,
-                             NotificationRepository notificationRepository) {
+                             NotificationRepository notificationRepository,
+                             ParentTeacherMessageRepository messageRepository,
+                             AddTeacherRepository teacherRepository,
+                             SchoolRepository schoolRepository) {
         this.studentRepository = studentRepository;
         this.examMarksRepository = examMarksRepository;
         this.examRepository = examRepository;
         this.attendanceRepository = attendanceRepository;
         this.notificationRepository = notificationRepository;
+        this.messageRepository = messageRepository;
+        this.teacherRepository = teacherRepository;
+        this.schoolRepository = schoolRepository;
     }
 
-    // ===== Dashboard Overview =====
+    // ===== 1. Dashboard Overview =====
 
     @Override
     public ParentDashboardDTO getDashboardOverview(Long schoolId, Long studentId, Long academicYearId) {
@@ -93,7 +110,7 @@ public class ParentServiceImpl implements ParentService {
                 ? Math.round((presentDays * 100.0 / totalDays) * 10.0) / 10.0
                 : 0.0;
 
-        // 5. Recent Marks (latest 3 marks across exams for this student/academicYear)
+        // 5. Recent Marks (latest 5 marks across exams for this student/academicYear)
         List<ExamMarks> allMarks = examMarksRepository
                 .findByAddStudent_IdAndSchool_SchoolIdAndAcademicYear_AcademicYearId(studentId, schoolId, academicYearId);
 
@@ -154,7 +171,7 @@ public class ParentServiceImpl implements ParentService {
                 .build();
     }
 
-    // ===== Report Card =====
+    // ===== 2. Report Card =====
 
     @Override
     public AcademicProgressDTO getReportCard(Long schoolId, Long academicYearId, Long studentId) {
@@ -264,6 +281,85 @@ public class ParentServiceImpl implements ParentService {
         response.setSubjects(subjects);
 
         return response;
+    }
+
+    // ===== 3. Messages (Parent <-> Teacher) =====
+
+    @Override
+    public ParentTeacherMessageDTO sendMessage(SendMessageRequestDTO request) {
+        School school = schoolRepository.findById(request.getSchoolId())
+                .orElseThrow(() -> new RuntimeException("School not found id=" + request.getSchoolId()));
+
+        AddStudent student = studentRepository.findById(request.getStudentId())
+                .orElseThrow(() -> new RuntimeException("Student not found id=" + request.getStudentId()));
+
+        AddTeacher teacher = null;
+        if (request.getTeacherId() != null) {
+            teacher = teacherRepository.findById(request.getTeacherId()).orElse(null);
+        }
+
+        ParentTeacherMessage msg = ParentTeacherMessage.builder()
+                .school(school)
+                .student(student)
+                .teacher(teacher)
+                .senderType(request.getSenderType() != null ? request.getSenderType().toUpperCase() : "PARENT")
+                .senderName(request.getSenderName())
+                .messageText(request.getMessageText())
+                .build();
+
+        ParentTeacherMessage saved = messageRepository.save(msg);
+        return toDTO(saved);
+    }
+
+    @Override
+    public List<ParentTeacherMessageDTO> getStudentConversation(Long schoolId, Long studentId) {
+        List<ParentTeacherMessage> list = messageRepository
+                .findBySchool_SchoolIdAndStudent_IdOrderBySentAtAsc(schoolId, studentId);
+        return list.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ParentTeacherMessageDTO> getTeacherMessages(Long schoolId, Long teacherId) {
+        List<ParentTeacherMessage> list;
+        if (teacherId != null) {
+            list = messageRepository.findBySchool_SchoolIdAndTeacher_IdOrderBySentAtDesc(schoolId, teacherId);
+            // If empty, return all school messages so teacher can see queries from their classes
+            if (list.isEmpty()) {
+                list = messageRepository.findBySchool_SchoolIdOrderBySentAtDesc(schoolId);
+            }
+        } else {
+            list = messageRepository.findBySchool_SchoolIdOrderBySentAtDesc(schoolId);
+        }
+        return list.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    private ParentTeacherMessageDTO toDTO(ParentTeacherMessage msg) {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        String studentName = msg.getStudent() != null
+                ? ((msg.getStudent().getFirstName() != null ? msg.getStudent().getFirstName() : "") + " "
+                + (msg.getStudent().getLastName() != null ? msg.getStudent().getLastName() : "")).trim()
+                : "Student";
+        String std = (msg.getStudent() != null && msg.getStudent().getAddStandard() != null)
+                ? msg.getStudent().getAddStandard().getStandard() : "";
+        String div = (msg.getStudent() != null && msg.getStudent().getAddDivision() != null)
+                ? msg.getStudent().getAddDivision().getDivisionName() : "";
+        String teacherName = msg.getTeacher() != null ? msg.getTeacher().getTeacherName() : "Class Teacher";
+
+        return ParentTeacherMessageDTO.builder()
+                .id(msg.getId())
+                .schoolId(msg.getSchool() != null ? msg.getSchool().getSchoolId() : null)
+                .studentId(msg.getStudent() != null ? msg.getStudent().getId() : null)
+                .studentName(studentName)
+                .standard(std)
+                .division(div)
+                .teacherId(msg.getTeacher() != null ? msg.getTeacher().getId() : null)
+                .teacherName(teacherName)
+                .senderType(msg.getSenderType())
+                .senderName(msg.getSenderName())
+                .messageText(msg.getMessageText())
+                .sentAt(msg.getSentAt() != null ? msg.getSentAt().format(dtf) : "")
+                .isRead(msg.getIsRead())
+                .build();
     }
 
     // ===== Helper Methods =====
