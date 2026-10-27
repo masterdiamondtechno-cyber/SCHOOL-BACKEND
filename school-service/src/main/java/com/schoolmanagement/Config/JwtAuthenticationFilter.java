@@ -101,13 +101,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // Extract role directly from JWT — NO DB query needed
             String role = jwtUtil.extractRole(token);
 
-            if (username != null
+            // username (sub) may be null for student tokens generated without email — use uid as fallback
+            Object uidClaimFallback = jwtUtil.extractClaim(token, "uid");
+            String effectiveUsername = (username != null) ? username
+                    : (uidClaimFallback != null ? "student_" + uidClaimFallback : null);
+
+            if (effectiveUsername != null
                     && role != null
                     && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                LOGGER.debug("Extracted username='{}', role='{}' from token", username, role);
+                LOGGER.debug("Extracted username='{}', role='{}' from token", effectiveUsername, role);
 
-                if (jwtUtil.validateToken(token, username)) {
+                if (jwtUtil.validateToken(token, effectiveUsername)) {
                     // Check active status of the school if associated
                     Object sidClaim = jwtUtil.extractClaim(token, "sid");
                     if (sidClaim != null) {
@@ -155,11 +160,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                     // Build authentication from token claims directly
                     SimpleGrantedAuthority authority =
-                            new SimpleGrantedAuthority("ROLE_" + role);
+                            new SimpleGrantedAuthority("ROLE_" + role.toUpperCase());
 
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(
-                                    username,
+                                    effectiveUsername,
                                     null,
                                     Collections.singleton(authority)
                             );
@@ -168,12 +173,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             new WebAuthenticationDetailsSource().buildDetails(request));
 
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-                    LOGGER.info("JWT validated and authentication set for user='{}' with authority='ROLE_{}'", username, role);
+                    LOGGER.info("JWT validated and authentication set for user='{}' with authority='ROLE_{}'", effectiveUsername, role);
                 } else {
-                    LOGGER.warn("JWT validation failed for user='{}'. Allowing security framework to handle (401)", username);
+                    LOGGER.warn("JWT validation failed for user='{}'. Allowing security framework to handle (401)", effectiveUsername);
                 }
             } else {
-                LOGGER.debug("Username or role missing or authentication already present. username={}, role={}, existingAuth={}", username, role, SecurityContextHolder.getContext().getAuthentication() != null);
+                LOGGER.debug("Username or role missing or authentication already present. username={}, role={}, existingAuth={}", effectiveUsername, role, SecurityContextHolder.getContext().getAuthentication() != null);
             }
         } catch (JwtException | IllegalArgumentException e) {
             LOGGER.warn("Invalid JWT encountered: {}", e.getMessage());

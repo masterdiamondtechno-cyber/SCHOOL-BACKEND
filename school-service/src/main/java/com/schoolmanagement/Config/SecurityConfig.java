@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -35,21 +36,23 @@ public class SecurityConfig {
 
                                                 // ── Open / Public endpoints ──────────────────────────────────
                                                 .requestMatchers(
-                                                                "/api/auth/**",
-                                                                "/api/auth/admin/**",
-                                                                "/api/AddSchool/create",
-                                                                "/api/AddSchool/sendOtp",
-                                                                "/api/AddSchool/verifyOtp",
-                                                                "/api/AddSchool/updatePassword",
-                                                                "/api/status",
-                                                                "/api/public/razorpay/**",
-                                                                "/swagger-ui/**",
-                                                                "/swagger-ui.html",
-                                                                "/v3/api-docs/**",
-                                                                "/actuator/health",
-                                                                "/actuator/info",
-                                                                "/api/subscription/plans",
-                                                                "/api/subscription/plans/**")
+                                                                new AntPathRequestMatcher("/student/changePassword"),
+                                                                new AntPathRequestMatcher("/student/changePassword/**"),
+                                                                new AntPathRequestMatcher("/api/auth/**"),
+                                                                new AntPathRequestMatcher("/api/auth/admin/**"),
+                                                                new AntPathRequestMatcher("/api/AddSchool/create"),
+                                                                new AntPathRequestMatcher("/api/AddSchool/sendOtp"),
+                                                                new AntPathRequestMatcher("/api/AddSchool/verifyOtp"),
+                                                                new AntPathRequestMatcher("/api/AddSchool/updatePassword"),
+                                                                new AntPathRequestMatcher("/api/status"),
+                                                                new AntPathRequestMatcher("/api/public/razorpay/**"),
+                                                                new AntPathRequestMatcher("/swagger-ui/**"),
+                                                                new AntPathRequestMatcher("/swagger-ui.html"),
+                                                                new AntPathRequestMatcher("/v3/api-docs/**"),
+                                                                new AntPathRequestMatcher("/actuator/health"),
+                                                                new AntPathRequestMatcher("/actuator/info"),
+                                                                new AntPathRequestMatcher("/api/subscription/plans"),
+                                                                new AntPathRequestMatcher("/api/subscription/plans/**"))
                                                 .permitAll()
 
                                                 // ── App Admin / Super Admin protected endpoints ───────────────

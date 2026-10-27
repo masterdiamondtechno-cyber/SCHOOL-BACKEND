@@ -28,9 +28,11 @@ public class JwtUtil {
             expiry = 1000L * 60 * 60 * 4; // 4 hours for Admin
         }
         
+        String subject = (username != null && !username.isBlank()) ? username : String.valueOf(claims.getOrDefault("uid", "user"));
+        claims.put("sub", subject);
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(username)
+                .setSubject(subject)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiry))
                 .signWith(signingKey(), SignatureAlgorithm.HS256)

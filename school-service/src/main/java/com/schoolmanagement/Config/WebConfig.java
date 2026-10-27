@@ -36,6 +36,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "/api/AddSchool/sendOtp",
                         "/api/AddSchool/verifyOtp",
                         "/api/AddSchool/updatePassword",
+                        "/student/changePassword",
 
                         // Subscription APIs — plans dekhna, payment karna
                         "/api/subscription/**",

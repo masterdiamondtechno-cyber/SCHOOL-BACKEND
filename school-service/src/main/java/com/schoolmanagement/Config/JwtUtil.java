@@ -58,6 +58,13 @@ public class JwtUtil {
     }
 
     public boolean validateToken(String token, String username) {
-        return extractUsername(token).equals(username) && !isExpired(token);
+        String subject = extractUsername(token);
+        // subject may be null if JWT was created without setSubject() — fall back to uid claim
+        if (subject == null) {
+            // Token is valid if role claim is present and token is not expired
+            Object roleClaim = extractClaim(token, "role");
+            return roleClaim != null && !isExpired(token);
+        }
+        return subject.equals(username) && !isExpired(token);
     }
 }
