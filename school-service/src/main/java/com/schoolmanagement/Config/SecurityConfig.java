@@ -36,8 +36,6 @@ public class SecurityConfig {
 
                                                 // ── Open / Public endpoints ──────────────────────────────────
                                                 .requestMatchers(
-                                                                new AntPathRequestMatcher("/student/changePassword"),
-                                                                new AntPathRequestMatcher("/student/changePassword/**"),
                                                                 new AntPathRequestMatcher("/api/auth/**"),
                                                                 new AntPathRequestMatcher("/api/auth/admin/**"),
                                                                 new AntPathRequestMatcher("/api/AddSchool/create"),

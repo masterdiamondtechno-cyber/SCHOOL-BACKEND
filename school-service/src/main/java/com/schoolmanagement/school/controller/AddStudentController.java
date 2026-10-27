@@ -19,6 +19,8 @@ import com.schoolmanagement.school.dto.UpdatePasswordDTO;
 import com.schoolmanagement.school.repository.AcademicYearRepository;
 import com.schoolmanagement.school.repository.SchoolRepository;
 import com.schoolmanagement.school.service.AddStudentService;
+import com.schoolmanagement.Config.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/student")
@@ -27,13 +29,16 @@ public class AddStudentController {
     private final AddStudentService studentService;
     private final SchoolRepository schoolRepository;
     private final AcademicYearRepository academicYearRepository;
+    private final JwtUtil jwtUtil;
 
     public AddStudentController(AddStudentService studentService,
             SchoolRepository schoolRepository,
-            AcademicYearRepository academicYearRepository) {
+            AcademicYearRepository academicYearRepository,
+            JwtUtil jwtUtil) {
         this.studentService = studentService;
         this.schoolRepository = schoolRepository;
         this.academicYearRepository = academicYearRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     // ==================== Helper ====================
@@ -581,7 +586,8 @@ public class AddStudentController {
     // ==================== CHANGE PASSWORD (Student) ====================
 
     @PostMapping("/changePassword")
-    public ResponseEntity<Map<String, Object>> changePassword(@RequestBody(required = false) ChangePasswordDTO dto) {
+    public ResponseEntity<Map<String, Object>> changePassword(@RequestBody(required = false) ChangePasswordDTO dto,
+                                                              HttpServletRequest request) {
 
         try {
             if (dto == null) {
@@ -592,6 +598,20 @@ public class AddStudentController {
             }
             if (dto.getSchoolId() == null) {
                 return ResponseEntity.badRequest().body(build(400, "FAILED", "'schoolId' is required", null));
+            }
+
+            // Industry standard: Verify token identity to prevent IDOR attacks
+            String authHeader = request.getHeader("Authorization");
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                String token = authHeader.substring(7);
+                Object uidClaim = jwtUtil.extractClaim(token, "uid");
+                if (uidClaim != null) {
+                    Long tokenStudentId = Long.valueOf(uidClaim.toString());
+                    if (!tokenStudentId.equals(dto.getStudentId())) {
+                        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                                .body(build(403, "FAILED", "Unauthorized: You can only change your own password", null));
+                    }
+                }
             }
             if (dto.getCurrentPassword() == null || dto.getCurrentPassword().trim().isEmpty()) {
                 return ResponseEntity.badRequest().body(build(400, "FAILED", "'currentPassword' is required", null));
@@ -620,7 +640,8 @@ public class AddStudentController {
     // ====================
 
     @PostMapping("/updatePassword")
-    public ResponseEntity<Map<String, Object>> updatePassword(@RequestBody(required = false) UpdatePasswordDTO dto) {
+    public ResponseEntity<Map<String, Object>> updatePassword(@RequestBody(required = false) UpdatePasswordDTO dto,
+                                                              HttpServletRequest request) {
 
         try {
             if (dto == null) {
@@ -631,6 +652,20 @@ public class AddStudentController {
             }
             if (dto.getSchoolId() == null) {
                 return ResponseEntity.badRequest().body(build(400, "FAILED", "'schoolId' is required", null));
+            }
+
+            // Industry standard: Verify token identity to prevent IDOR attacks
+            String authHeader = request.getHeader("Authorization");
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                String token = authHeader.substring(7);
+                Object uidClaim = jwtUtil.extractClaim(token, "uid");
+                if (uidClaim != null) {
+                    Long tokenStudentId = Long.valueOf(uidClaim.toString());
+                    if (!tokenStudentId.equals(dto.getStudentId())) {
+                        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                                .body(build(403, "FAILED", "Unauthorized: You can only update your own password", null));
+                    }
+                }
             }
             if (dto.getOldPassword() == null || dto.getOldPassword().trim().isEmpty()) {
                 return ResponseEntity.badRequest().body(build(400, "FAILED", "'oldPassword' is required", null));
