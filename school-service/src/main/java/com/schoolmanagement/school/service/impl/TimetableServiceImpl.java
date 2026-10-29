@@ -1,4 +1,4 @@
-package com.schoolmanagement.school.serviceImpl;
+package com.schoolmanagement.school.service.impl;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;

@@ -1,4 +1,4 @@
-package com.schoolmanagement.school.serviceImpl;
+package com.schoolmanagement.school.service.impl;
 
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
