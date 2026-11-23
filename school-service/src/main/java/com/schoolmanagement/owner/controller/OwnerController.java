@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,11 @@ public class OwnerController {
 
     @Autowired
     private OwnerService ownerService;
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.setDisallowedFields("schoolLogo");
+    }
 
     // ─────────────────────────────────────────────────────────────
     //  1. DASHBOARD

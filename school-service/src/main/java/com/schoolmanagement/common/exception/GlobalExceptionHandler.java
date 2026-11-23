@@ -1,4 +1,4 @@
-package com.schoolmanagement;
+package com.schoolmanagement.common.exception;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

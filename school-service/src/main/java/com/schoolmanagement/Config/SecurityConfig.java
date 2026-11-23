@@ -1,4 +1,4 @@
-﻿package com.schoolmanagement.Config;
+package com.schoolmanagement.Config;
 
 import java.util.List;
 

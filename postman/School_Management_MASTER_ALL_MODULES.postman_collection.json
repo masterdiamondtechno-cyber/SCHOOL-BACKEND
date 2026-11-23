@@ -1,0 +1,3251 @@
+{
+  "info": {
+    "_postman_id": "school-mgmt-saas-master-all-modules-v3",
+    "name": "School Management Platform - MASTER API Collection (100% All Modules & Panels)",
+    "description": "Comprehensive Master Collection covering:\n1. Super Admin Panel (School Approval, Analytics, Franchise Owners)\n2. SaaS Subscription & Razorpay Gateway Panel\n3. School Administrator & Authentication Panel\n4. Institutional Academic & ERP Panels (Students, Teachers, Standards, Divisions, Subjects, Attendance, Fees, Exams, Timetable, Notifications)\n5. Security & Expired Subscription Interceptor Tests\n\nEquipped with automatic JWT token harvesting and dynamic ID propagation.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "school_id",
+      "value": "3",
+      "type": "string"
+    },
+    {
+      "key": "academic_year_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "standard_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "division_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "subject_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "student_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "teacher_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "owner_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "plan_id",
+      "value": "2",
+      "type": "string"
+    },
+    {
+      "key": "razorpay_order_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Health & OpenAPI Specs",
+      "description": "Server health status and Swagger documentation",
+      "item": [
+        {
+          "name": "Actuator Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/actuator/health",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "actuator",
+                "health"
+              ]
+            },
+            "description": "Verifies application status is UP"
+          },
+          "response": []
+        },
+        {
+          "name": "Swagger UI Documentation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/swagger-ui/index.html",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "swagger-ui",
+                "index.html"
+              ]
+            },
+            "description": "Opens interactive Swagger UI in browser"
+          },
+          "response": []
+        },
+        {
+          "name": "OpenAPI v3 JSON Specs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/v3/api-docs",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v3",
+                "api-docs"
+              ]
+            },
+            "description": "Raw Swagger JSON schema specifications"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "02 - SaaS Pricing Plans (Public)",
+      "description": "Subscription tier definitions accessible publicly",
+      "item": [
+        {
+          "name": "Get All Subscription Plans",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/subscription/plans",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "subscription",
+                "plans"
+              ]
+            },
+            "description": "Returns BASIC, PRO, and ENTERPRISE plans"
+          },
+          "response": []
+        },
+        {
+          "name": "Get BASIC Plan Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/subscription/plans/BASIC",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "subscription",
+                "plans",
+                "BASIC"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Get PRO Plan Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/subscription/plans/PRO",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "subscription",
+                "plans",
+                "PRO"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Get ENTERPRISE Plan Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/subscription/plans/ENTERPRISE",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "subscription",
+                "plans",
+                "ENTERPRISE"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "03 - App Admin Panel (Super Admin)",
+      "description": "Super admin approval workflows, multi-school analytics, and franchise owners",
+      "item": [
+        {
+          "name": "Approve or Reject School Registration",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app_admin/SchoolApprovalController/update-status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "app_admin",
+                "SchoolApprovalController",
+                "update-status"
+              ]
+            },
+            "description": "Approves a school registration and initializes trial",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"status\": \"APPROVED\",\n  \"reason\": \"Documents verified\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle School Operational Status (ACTIVE/INACTIVE)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app_admin/SchoolApprovalController/update-school-status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "app_admin",
+                "SchoolApprovalController",
+                "update-school-status"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"schoolStatus\": \"ACTIVE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Active Schools",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app_admin/SchoolApprovalController/active",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "app_admin",
+                "SchoolApprovalController",
+                "active"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Inactive Schools",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app_admin/SchoolApprovalController/inactive",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "app_admin",
+                "SchoolApprovalController",
+                "inactive"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Count Active Schools",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app_admin/SchoolApprovalController/count/active",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "app_admin",
+                "SchoolApprovalController",
+                "count",
+                "active"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Count Inactive Schools",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app_admin/SchoolApprovalController/count/inactive",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "app_admin",
+                "SchoolApprovalController",
+                "count",
+                "inactive"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Save App Admin Dashboard Widget",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/app-admin/dashboard/item/save",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "app-admin",
+                "dashboard",
+                "item",
+                "save"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dashboardItemName\": \"totalStudents\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get App Admin Dashboard Metrics",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/app-admin/dashboard/data",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "app-admin",
+                "dashboard",
+                "data"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Branches with Student Counts",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/app-admin/dashboard/branches",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "app-admin",
+                "dashboard",
+                "branches"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Create Franchise Owner",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app_admin/owner/create",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "app_admin",
+                "owner",
+                "create"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ramesh Gupta\",\n  \"email\": \"ramesh.gupta@trust.edu\",\n  \"phone\": \"9822011223\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json(); var oid = res.data ? (res.data.ownerId || res.data.id) : null; if(oid) pm.collectionVariables.set('owner_id', oid);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Approve / Reject Franchise Owner",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app_admin/owner/update-status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "app_admin",
+                "owner",
+                "update-status"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ownerId\": 1,\n  \"status\": \"APPROVED\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Franchise Owners (Paginated)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/app_admin/owner/list",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "app_admin",
+                "owner",
+                "list"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"page\": 0,\n  \"size\": 10,\n  \"sortBy\": \"name\",\n  \"sortDirection\": \"asc\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "04 - School Auth & Registration Panel",
+      "description": "School self-onboarding, login (auto-token save), password management and profile",
+      "item": [
+        {
+          "name": "Register New School (Auto-saves school_id)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/AddSchool/create",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "AddSchool",
+                "create"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "schoolName",
+                  "value": "Modern High School",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "modern_high_admin@masterdiamond.in",
+                  "type": "text"
+                },
+                {
+                  "key": "phoneNo",
+                  "value": "9876543210",
+                  "type": "text"
+                },
+                {
+                  "key": "udiseNo",
+                  "value": "UDISE2721099",
+                  "type": "text"
+                },
+                {
+                  "key": "state",
+                  "value": "Maharashtra",
+                  "type": "text"
+                },
+                {
+                  "key": "district",
+                  "value": "Pune",
+                  "type": "text"
+                },
+                {
+                  "key": "taluka",
+                  "value": "Haveli",
+                  "type": "text"
+                },
+                {
+                  "key": "pincode",
+                  "value": "411038",
+                  "type": "text"
+                },
+                {
+                  "key": "schoolAddress",
+                  "value": "Shivaji Nagar, Pune",
+                  "type": "text"
+                },
+                {
+                  "key": "principalName",
+                  "value": "Dr. V. K. Deshmukh",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json(); var sid = res.data ? (res.data.schoolId || res.data.id) : null; if(sid) pm.collectionVariables.set('school_id', sid);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "School Admin Login (Auto-saves JWT Token)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/AddSchool/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "AddSchool",
+                "login"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"jiteshpatlee@gmail.com\",\n  \"password\": \"School@123\",\n  \"role\": \"SCHOOL_ADMIN\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "var token = res.token || res.accessToken || (res.data && (res.data.token || res.data.accessToken || res.data.jwt));",
+                  "if(token) {",
+                  "  pm.collectionVariables.set('token', token);",
+                  "  console.log('JWT Token successfully set into {{token}}');",
+                  "}",
+                  "var sid = res.data && (res.data.schoolId || res.data.id);",
+                  "if(sid) pm.collectionVariables.set('school_id', sid);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get School Profile by ID",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/AddSchool/getBySchoolId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "AddSchool",
+                "getBySchoolId"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Registered Schools",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/AddSchool/getAll",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "AddSchool",
+                "getAll"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Update School Information",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/AddSchool/update",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "AddSchool",
+                "update"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "schoolId",
+                  "value": "3",
+                  "type": "text"
+                },
+                {
+                  "key": "schoolName",
+                  "value": "Modern High School (Updated)",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "jiteshpatlee@gmail.com",
+                  "type": "text"
+                },
+                {
+                  "key": "phoneNo",
+                  "value": "9876543210",
+                  "type": "text"
+                },
+                {
+                  "key": "state",
+                  "value": "Maharashtra",
+                  "type": "text"
+                },
+                {
+                  "key": "district",
+                  "value": "Pune",
+                  "type": "text"
+                },
+                {
+                  "key": "taluka",
+                  "value": "Haveli",
+                  "type": "text"
+                },
+                {
+                  "key": "pincode",
+                  "value": "411038",
+                  "type": "text"
+                },
+                {
+                  "key": "schoolAddress",
+                  "value": "Shivaji Nagar, Pune",
+                  "type": "text"
+                },
+                {
+                  "key": "subscriptionStatus",
+                  "value": "ACTIVE",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Send OTP for Verification / Reset",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/AddSchool/sendOtp",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "AddSchool",
+                "sendOtp"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"jiteshpatlee@gmail.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Received OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/AddSchool/verifyOtp",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "AddSchool",
+                "verifyOtp"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"jiteshpatlee@gmail.com\",\n  \"otp\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update School Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/AddSchool/updatePassword",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "AddSchool",
+                "updatePassword"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"jiteshpatlee@gmail.com\",\n  \"newPassword\": \"School@123\",\n  \"confirmPassword\": \"School@123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Resend Registration Confirmation Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/AddSchool/resend-registration-email",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "AddSchool",
+                "resend-registration-email"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete School Record",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/AddSchool/delete",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "AddSchool",
+                "delete"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "05 - SaaS Subscription & Razorpay Gateway",
+      "description": "Orders, Mock/Live signature verification, plan status and ledger",
+      "item": [
+        {
+          "name": "Start 14-Day Free Trial",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/subscription/trial/{{school_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "subscription",
+                "trial",
+                "{{school_id}}"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Create Razorpay Order (Auto-saves razorpay_order_id)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/subscription/create-order/{{school_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "subscription",
+                "create-order",
+                "{{school_id}}"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"planId\": 2,\n  \"billingCycle\": \"MONTHLY\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json(); var d = res.data || res; var oid = d.razorpayOrderId || d.orderId || d.id; if(oid) pm.collectionVariables.set('razorpay_order_id', oid);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Verify Razorpay Payment (Mock/Live)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/subscription/verify-payment/{{school_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "subscription",
+                "verify-payment",
+                "{{school_id}}"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"razorpayOrderId\": \"{{razorpay_order_id}}\",\n  \"razorpayPaymentId\": \"pay_mock_test_123\",\n  \"razorpaySignature\": \"mock_sig_test_123\",\n  \"planId\": 2,\n  \"billingCycle\": \"MONTHLY\",\n  \"schoolId\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Direct Plan Subscribe (Admin Override)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/subscription/subscribe/{{school_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "subscription",
+                "subscribe",
+                "{{school_id}}"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"planId\": 2,\n  \"billingCycle\": \"YEARLY\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current Active Subscription Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/subscription/current/{{school_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "subscription",
+                "current",
+                "{{school_id}}"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Check If Subscription Is Currently Active",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/subscription/check/{{school_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "subscription",
+                "check",
+                "{{school_id}}"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Get Invoices & Payment History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/subscription/payments/{{school_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "subscription",
+                "payments",
+                "{{school_id}}"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Subscription",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/subscription/cancel/{{school_id}}?reason=UserRequestedCancellation",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "subscription",
+                "cancel",
+                "{{school_id}}"
+              ],
+              "query": [
+                {
+                  "key": "reason",
+                  "value": "UserRequestedCancellation"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "06 - Academic Year Panel",
+      "description": "Session configurations (e.g. 2026-2027) per school",
+      "item": [
+        {
+          "name": "Create Academic Year (Auto-saves academic_year_id)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/academicYear/create",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "academicYear",
+                "create"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYear\": \"2026-2027\",\n  \"startDate\": \"2026-06-01\",\n  \"endDate\": \"2027-04-30\",\n  \"isCurrent\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json(); var id = res.data && (res.data.academicYearId || res.data.id); if(id) pm.collectionVariables.set('academic_year_id', id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Academic Years for School",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/academicYear/getAll",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "academicYear",
+                "getAll"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current Active Academic Year",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/academicYear/getCurrent",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "academicYear",
+                "getCurrent"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Academic Year Dates/Status",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/academicYear/update",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "academicYear",
+                "update"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"academicYearId\": 1,\n  \"schoolId\": 3,\n  \"academicYear\": \"2026-2027\",\n  \"isCurrent\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "07 - Standards & Classes Panel",
+      "description": "Class levels (e.g. 1st, 2nd, 10th Standard)",
+      "item": [
+        {
+          "name": "Add Standard / Class (Auto-saves standard_id)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/standard/addStandard",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "standard",
+                "addStandard"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1,\n  \"standard\": \"10th Standard\",\n  \"classTeacherId\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json(); var id = res.data && (res.data.standardId || res.data.id); if(id) pm.collectionVariables.set('standard_id', id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Standards for School",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/standard/getAllBySchoolId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "standard",
+                "getAllBySchoolId"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Standard Details By ID",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/standard/getByStandardId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "standard",
+                "getByStandardId"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1,\n  \"standardId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Standard",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/standard/updateStandard",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "standard",
+                "updateStandard"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"standardId\": 1,\n  \"schoolId\": 3,\n  \"academicYearId\": 1,\n  \"standard\": \"10th Standard (Updated)\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "08 - Divisions & Sections Panel",
+      "description": "Class sections (A, B, C)",
+      "item": [
+        {
+          "name": "Add Division / Section (Auto-saves division_id)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/division/addDivision",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "division",
+                "addDivision"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1,\n  \"standardId\": 1,\n  \"divisionName\": \"Division A\",\n  \"classTeacherId\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json(); var id = res.data && (res.data.divisionId || res.data.id); if(id) pm.collectionVariables.set('division_id', id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Divisions for School",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/division/getAllBySchoolId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "division",
+                "getAllBySchoolId"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Division Details By ID",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/division/getByDivisionId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "division",
+                "getByDivisionId"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1,\n  \"divisionId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Division",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/division/updateDivision",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "division",
+                "updateDivision"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"divisionId\": 1,\n  \"schoolId\": 3,\n  \"academicYearId\": 1,\n  \"standardId\": 1,\n  \"divisionName\": \"Division A (Updated)\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "09 - Subjects Panel",
+      "description": "Subject offerings (Mathematics, Science, English, etc.)",
+      "item": [
+        {
+          "name": "Add Subject (Auto-saves subject_id)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/subject/addSubject",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "subject",
+                "addSubject"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1,\n  \"standardId\": 1,\n  \"divisionId\": 1,\n  \"subjectName\": \"Mathematics\",\n  \"subjectCode\": \"MATH101\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json(); var id = res.data && (res.data.subjectId || res.data.id); if(id) pm.collectionVariables.set('subject_id', id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Subjects for School",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/subject/getAllBySchoolId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "subject",
+                "getAllBySchoolId"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Subject Details By ID",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/subject/getBySubjectId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "subject",
+                "getBySubjectId"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1,\n  \"subjectId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Subject",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/subject/updateSubject",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "subject",
+                "updateSubject"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subjectId\": 1,\n  \"schoolId\": 3,\n  \"academicYearId\": 1,\n  \"subjectName\": \"Advanced Mathematics\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "10 - Student Management Panel",
+      "description": "Student admissions, directory, profile information, and password updates",
+      "item": [
+        {
+          "name": "Admit New Student (Auto-saves student_id)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/student/create",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "student",
+                "create"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1,\n  \"standardId\": 1,\n  \"divisionId\": 1,\n  \"firstName\": \"Aarav\",\n  \"middleName\": \"Sunil\",\n  \"lastName\": \"Patil\",\n  \"gender\": \"MALE\",\n  \"dob\": \"2012-05-15\",\n  \"mobileNumber\": \"9811223344\",\n  \"emailId\": \"aarav.patil@student.in\",\n  \"address\": \"Baner Road, Pune\",\n  \"rollNo\": 1,\n  \"grNo\": \"GR2026001\",\n  \"bloodGroup\": \"O+\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json(); var id = res.data && (res.data.id || res.data.studentId); if(id) pm.collectionVariables.set('student_id', id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Student Profile By ID",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/student/getbyschoolid/studentid",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "student",
+                "getbyschoolid",
+                "studentid"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"schoolId\": 3,\n  \"academicYearId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Students in Division",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/student/getbydivisionid",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "student",
+                "getbydivisionid"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1,\n  \"standardId\": 1,\n  \"divisionId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Student Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/student/updatePassword",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "student",
+                "updatePassword"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentId\": 1,\n  \"schoolId\": 3,\n  \"oldPassword\": \"Student@123\",\n  \"newPassword\": \"Student@New123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Bulk Reset Student Passwords",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/student/resetPasswordsBulk",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "student",
+                "resetPasswordsBulk"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"studentIds\": [\n    1\n  ],\n  \"defaultPassword\": \"Student@123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "11 - Teacher & Faculty Panel",
+      "description": "Teacher recruitment, subject teaching assignments, and contact details",
+      "item": [
+        {
+          "name": "Add New Teacher (Auto-saves teacher_id)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/teacher/create",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "teacher",
+                "create"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1,\n  \"teacherName\": \"Mrs. Sunita Kulkarni\",\n  \"mobileNumber\": \"9822334455\",\n  \"emailId\": \"sunita.kulkarni@teacher.in\",\n  \"gender\": \"FEMALE\",\n  \"qualification\": \"M.Sc. B.Ed. Mathematics\",\n  \"designation\": \"Senior Teacher\",\n  \"experienceYears\": 8,\n  \"salary\": 45000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json(); var id = res.data && (res.data.teacherId || res.data.id); if(id) pm.collectionVariables.set('teacher_id', id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Teachers for School",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/teacher/getAllBySchoolId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "teacher",
+                "getAllBySchoolId"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Teacher By ID",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/teacher/getByTeacherId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "teacher",
+                "getByTeacherId"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"teacherId\": 1,\n  \"academicYearId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Teacher Information",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/teacher/update",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "teacher",
+                "update"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"teacherId\": 1,\n  \"schoolId\": 3,\n  \"teacherName\": \"Mrs. Sunita Kulkarni (M.Sc.)\",\n  \"mobileNumber\": \"9822334455\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "12 - Student Attendance Panel",
+      "description": "Daily and lecture-wise student roll-call marking and attendance analytics",
+      "item": [
+        {
+          "name": "Mark Bulk Attendance for Class",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/attendance/markBulk",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "attendance",
+                "markBulk"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1,\n  \"standardId\": 1,\n  \"divisionId\": 1,\n  \"subjectId\": 1,\n  \"attendanceDate\": \"2026-10-25\",\n  \"entries\": [\n    {\n      \"studentId\": 1,\n      \"status\": \"PRESENT\",\n      \"remarks\": \"On time\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Attendance By Date & Subject",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/attendance/getByDateAndSubject",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "attendance",
+                "getByDateAndSubject"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1,\n  \"standardId\": 1,\n  \"divisionId\": 1,\n  \"attendanceDate\": \"2026-10-25\",\n  \"subjectId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Student Monthly Attendance Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/attendance/getStudentMonthly",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "attendance",
+                "getStudentMonthly"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1,\n  \"studentId\": 1,\n  \"month\": 10,\n  \"year\": 2026\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "13 - Fee Structure & Collection Panel",
+      "description": "Setup tuition and bus fee heads, accept installment payments, and view receipts",
+      "item": [
+        {
+          "name": "Create Standard Fee Structure",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/fee/structure/create",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "fee",
+                "structure",
+                "create"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1,\n  \"standardId\": 1,\n  \"feeName\": \"Annual Tuition Fee\",\n  \"amount\": 25000.0\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Fee Structures for Standard",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/fee/structure/getByStandard",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "fee",
+                "structure",
+                "getByStandard"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1,\n  \"standardId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Record Student Fee Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/fee/payment/create",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "fee",
+                "payment",
+                "create"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1,\n  \"studentId\": 1,\n  \"feeStructureId\": 1,\n  \"paidAmount\": 10000.0,\n  \"paymentMode\": \"CASH\",\n  \"remarks\": \"Term 1 installment\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Fee Collection Summary Page Data",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/fee/collection/pagedata",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "fee",
+                "collection",
+                "pagedata"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1,\n  \"standardId\": 1,\n  \"divisionId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "14 - Exams & Result Card Panel",
+      "description": "Examination timetable setup, marks entry, and hall tickets",
+      "item": [
+        {
+          "name": "Create Examination Schedule",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/exam/create",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "exam",
+                "create"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1,\n  \"standardId\": 1,\n  \"examName\": \"Mid-Term Examination 2026\",\n  \"startDate\": \"2026-11-10\",\n  \"endDate\": \"2026-11-20\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Exams for School",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/exam/getAllBySchoolId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "exam",
+                "getAllBySchoolId"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Submit Student Exam Marks",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/exam/marks/entry",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "exam",
+                "marks",
+                "entry"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1,\n  \"examId\": 1,\n  \"subjectId\": 1,\n  \"marks\": [\n    {\n      \"studentId\": 1,\n      \"marksObtained\": 88.5,\n      \"maxMarks\": 100.0,\n      \"isAbsent\": false\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Student Hall Ticket",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/exam/hallticket",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "exam",
+                "hallticket"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"examId\": 1,\n  \"studentId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "15 - Timetable Scheduling Panel",
+      "description": "Weekly period scheduling for classes, teachers, and school-wide views",
+      "item": [
+        {
+          "name": "Add Timetable Period Slot",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/timetable/create",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "timetable",
+                "create"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1,\n  \"standardId\": 1,\n  \"divisionId\": 1,\n  \"subjectId\": 1,\n  \"teacherId\": 1,\n  \"dayOfWeek\": \"MONDAY\",\n  \"startTime\": \"09:00:00\",\n  \"endTime\": \"09:45:00\",\n  \"roomNo\": \"Room 101\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Class Division Timetable",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/timetable/getByDivision",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "timetable",
+                "getByDivision"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1,\n  \"standardId\": 1,\n  \"divisionId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Teacher Weekly Timetable",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/timetable/getByTeacher",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "timetable",
+                "getByTeacher"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1,\n  \"teacherId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Full School Timetable",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/timetable/school",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "timetable",
+                "school"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "16 - Circulars & Notifications Panel",
+      "description": "Publish institutional circulars to students, parents, and teachers",
+      "item": [
+        {
+          "name": "Publish New Notification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notification/create",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notification",
+                "create"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1,\n  \"title\": \"Diwali Vacation Notice\",\n  \"message\": \"School will remain closed from Nov 1 to Nov 10 for Diwali holidays.\",\n  \"targetRole\": \"ALL\",\n  \"priority\": \"HIGH\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Notifications for School",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notification/getAllBySchoolId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notification",
+                "getAllBySchoolId"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "17 - School Analytics Dashboard Panel",
+      "description": "Real-time metrics, attendance %, collection stats for School Principal",
+      "item": [
+        {
+          "name": "Configure School Dashboard Card",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/school/dashboard/item/save",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "school",
+                "dashboard",
+                "item",
+                "save"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dashboardItemName\": \"totalStudents\",\n  \"role\": \"principal\",\n  \"schoolId\": 3,\n  \"academicYearId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Fetch Real-Time Dashboard KPI Data",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/school/dashboard/data",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "school",
+                "dashboard",
+                "data"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": 3,\n  \"academicYearId\": 1,\n  \"role\": \"principal\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "18 - Security & Interceptor Tests",
+      "description": "Validation test cases ensuring unauthorized and expired accounts are blocked",
+      "item": [
+        {
+          "name": "Protected Route Without Token -> Expect 401 / 403",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/subscription/current/{{school_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "subscription",
+                "current",
+                "{{school_id}}"
+              ]
+            },
+            "description": "Validates unauthenticated requests are blocked"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Missing token rejected', function() { pm.expect([401, 403]).to.include(pm.response.code); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Invalid JWT Signature -> Expect 401 / 403",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer fake.tampered.token"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/subscription/check/{{school_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "subscription",
+                "check",
+                "{{school_id}}"
+              ]
+            },
+            "description": "Validates tampered signatures are rejected"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Forged token rejected', function() { pm.expect([401, 403]).to.include(pm.response.code); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Expired Subscription Interceptor -> Expect 403",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/subscription/check/9999",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "subscription",
+                "check",
+                "9999"
+              ]
+            },
+            "description": "Tests SubscriptionInterceptor blocking access for expired schools"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Expired school blocked', function() { pm.expect([403, 404, 401]).to.include(pm.response.code); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

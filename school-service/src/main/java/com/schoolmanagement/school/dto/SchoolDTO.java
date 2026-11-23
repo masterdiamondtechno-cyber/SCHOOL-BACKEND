@@ -19,6 +19,14 @@ public class SchoolDTO {
     private String schoolAddress;
     private String schoolLogo;
 
+    public void setSchoolLogo(org.springframework.web.multipart.MultipartFile file) {
+        // Overloaded setter to safely consume MultipartFile without TypeMismatchException
+    }
+
+    public void setSchoolLogo(String schoolLogo) {
+        this.schoolLogo = schoolLogo;
+    }
+
     private String email;
     private String phoneNo;
     private Long roleId;

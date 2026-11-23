@@ -1317,6 +1317,8 @@ public class DashboardServiceImpl implements DashboardService {
         String logoUrl = null;
         if (school.getS3Key() != null && !school.getS3Key().isBlank()) {
             logoUrl = school.getS3Key(); // e.g. /uploads/logos/SCH001_logo.png
+        } else if (school.getSchoolLogo() != null && !school.getSchoolLogo().isBlank()) {
+            logoUrl = school.getSchoolLogo();
         }
         data.put("schoolLogo", logoUrl);
 
