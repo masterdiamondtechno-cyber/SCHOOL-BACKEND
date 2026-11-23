@@ -22,5 +22,6 @@ public class OwnerSchoolDTO {
     private long teacherCount;
     private double totalRevenue;
     private String registrationStatus;
+    private String schoolLogo;
 
 }

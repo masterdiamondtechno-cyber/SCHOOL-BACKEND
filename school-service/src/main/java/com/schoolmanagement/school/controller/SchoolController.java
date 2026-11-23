@@ -43,7 +43,14 @@ public class SchoolController {
     @PostMapping(value = "/create", consumes = {"multipart/form-data"})
     public ResponseEntity<Map<String, Object>> createSchool(
             @ModelAttribute SchoolDTO request,
-            @RequestParam(value = "schoolLogo", required = false) MultipartFile logoFile) {
+            @RequestParam(value = "schoolLogo", required = false) MultipartFile logoFile,
+            @RequestParam(value = "logo", required = false) MultipartFile logoAlt,
+            @RequestParam(value = "file", required = false) MultipartFile fileAlt,
+            @RequestParam(value = "image", required = false) MultipartFile imageAlt) {
+
+        MultipartFile actualLogo = (logoFile != null && !logoFile.isEmpty()) ? logoFile
+                : ((logoAlt != null && !logoAlt.isEmpty()) ? logoAlt
+                : ((fileAlt != null && !fileAlt.isEmpty()) ? fileAlt : imageAlt));
 
         Map<String, Object> response = new LinkedHashMap<>();
 
@@ -163,7 +170,7 @@ public class SchoolController {
             }
 
             // 9️⃣ Save School
-            School savedSchool = schoolService.createSchool(request, logoFile);
+            School savedSchool = schoolService.createSchool(request, actualLogo);
 
             response.put("code", 200);
             response.put("status", "SUCCESS");
@@ -172,6 +179,8 @@ public class SchoolController {
             // Return schoolId and optionally ownerId in response
             Map<String, Object> responseData = new LinkedHashMap<>();
             responseData.put("schoolId", savedSchool.getSchoolId());
+            responseData.put("schoolName", savedSchool.getSchoolName());
+            responseData.put("schoolLogo", savedSchool.getSchoolLogo());
             if (savedSchool.getOwner() != null) {
                 responseData.put("ownerId", savedSchool.getOwner().getOwnerId());
             }
@@ -406,7 +415,14 @@ public class SchoolController {
     @PostMapping(value = "/update", consumes = {"multipart/form-data"})
     public ResponseEntity<Map<String, Object>> updateSchool(
             @ModelAttribute SchoolDTO request,
-            @RequestParam(value = "schoolLogo", required = false) MultipartFile logoFile) {
+            @RequestParam(value = "schoolLogo", required = false) MultipartFile logoFile,
+            @RequestParam(value = "logo", required = false) MultipartFile logoAlt,
+            @RequestParam(value = "file", required = false) MultipartFile fileAlt,
+            @RequestParam(value = "image", required = false) MultipartFile imageAlt) {
+
+        MultipartFile actualLogo = (logoFile != null && !logoFile.isEmpty()) ? logoFile
+                : ((logoAlt != null && !logoAlt.isEmpty()) ? logoAlt
+                : ((fileAlt != null && !fileAlt.isEmpty()) ? fileAlt : imageAlt));
 
         Map<String, Object> response = new LinkedHashMap<>();
 
@@ -529,7 +545,7 @@ public class SchoolController {
 //            school.setRoleId(request.getRoleId());
             school.setSubscriptionStatus(request.getSubscriptionStatus());
 
-            schoolService.updateSchool(request.getSchoolId(), request, logoFile);
+            schoolService.updateSchool(request.getSchoolId(), request, actualLogo);
             
             response.put("code", 200);
             response.put("status", "SUCCESS");

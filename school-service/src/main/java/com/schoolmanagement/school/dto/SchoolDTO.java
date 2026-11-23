@@ -17,6 +17,7 @@ public class SchoolDTO {
     private String taluka;
     private String pincode;
     private String schoolAddress;
+    private String schoolLogo;
 
     private String email;
     private String phoneNo;

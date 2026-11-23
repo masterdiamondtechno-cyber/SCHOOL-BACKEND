@@ -127,7 +127,7 @@ public class OwnerSchoolQueryRepository {
             "       COUNT(DISTINCT s.id) AS student_count, " +
             "       COUNT(DISTINCT t.id) AS teacher_count, " +
             "       COALESCE(SUM(fp.amount_paid), 0) AS total_revenue, " +
-            "       sc.registration_status " +
+            "       sc.registration_status, sc.school_logo " +
             "FROM school sc " +
             "LEFT JOIN students s ON s.school_id = sc.school_id " +
             "LEFT JOIN teacher t  ON t.school_id = sc.school_id " +
@@ -146,7 +146,7 @@ public class OwnerSchoolQueryRepository {
                        "     OR sc.phone_no LIKE :search) ");
         }
         sql.append("GROUP BY sc.school_id, sc.school_name, sc.district, sc.state, " +
-                   "         sc.school_status, sc.subscription_status, sc.phone_no, sc.email, sc.created_at, sc.registration_status ");
+                   "         sc.school_status, sc.subscription_status, sc.phone_no, sc.email, sc.created_at, sc.registration_status, sc.school_logo ");
         sql.append("ORDER BY sc.school_name ASC ");
         sql.append("LIMIT :limit OFFSET :offset");
 
@@ -175,6 +175,7 @@ public class OwnerSchoolQueryRepository {
             dto.setTeacherCount(row[10] != null ? ((Number) row[10]).longValue() : 0L);
             dto.setTotalRevenue(row[11] != null ? ((Number) row[11]).doubleValue() : 0.0);
             dto.setRegistrationStatus((String) row[12]);
+            dto.setSchoolLogo((String) row[13]);
             result.add(dto);
         }
         return result;

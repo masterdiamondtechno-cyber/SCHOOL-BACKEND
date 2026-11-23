@@ -406,6 +406,8 @@ public class UnifiedLoginServiceImpl implements UnifiedLoginService {
         Map<String, Object> schoolInfo = new LinkedHashMap<>();
         schoolInfo.put("id", school.getSchoolId());
         schoolInfo.put("name", school.getSchoolName());
+        schoolInfo.put("logo", school.getSchoolLogo());
+        schoolInfo.put("schoolLogo", school.getSchoolLogo());
         schoolInfo.put("subscriptionStatus", school.getSubscriptionStatus());
         schoolInfo.put("isSubscriptionExpired", checkSubscriptionExpired(school));
 
@@ -444,6 +446,8 @@ public class UnifiedLoginServiceImpl implements UnifiedLoginService {
         Map<String, Object> schoolInfo = new LinkedHashMap<>();
         schoolInfo.put("id", teacher.getSchool().getSchoolId());
         schoolInfo.put("name", teacher.getSchool().getSchoolName());
+        schoolInfo.put("logo", teacher.getSchool().getSchoolLogo());
+        schoolInfo.put("schoolLogo", teacher.getSchool().getSchoolLogo());
         schoolInfo.put("subscriptionStatus", teacher.getSchool().getSubscriptionStatus());
         schoolInfo.put("isSubscriptionExpired", checkSubscriptionExpired(teacher.getSchool()));
 
@@ -490,6 +494,8 @@ public class UnifiedLoginServiceImpl implements UnifiedLoginService {
         Map<String, Object> schoolInfo = new LinkedHashMap<>();
         schoolInfo.put("id", student.getSchool().getSchoolId());
         schoolInfo.put("name", student.getSchool().getSchoolName());
+        schoolInfo.put("logo", student.getSchool().getSchoolLogo());
+        schoolInfo.put("schoolLogo", student.getSchool().getSchoolLogo());
         schoolInfo.put("subscriptionStatus", student.getSchool().getSubscriptionStatus());
         schoolInfo.put("isSubscriptionExpired", checkSubscriptionExpired(student.getSchool()));
 

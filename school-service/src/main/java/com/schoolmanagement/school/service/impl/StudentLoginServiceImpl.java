@@ -64,6 +64,8 @@ public class StudentLoginServiceImpl implements StudentLoginService {
         Map<String, Object> schoolInfo = new LinkedHashMap<>();
         schoolInfo.put("id",   student.getSchool().getSchoolId());
         schoolInfo.put("name", student.getSchool().getSchoolName());
+        schoolInfo.put("logo", student.getSchool().getSchoolLogo());
+        schoolInfo.put("schoolLogo", student.getSchool().getSchoolLogo());
 
         Map<String, Object> data = new LinkedHashMap<>();
         data.put("token",  token);

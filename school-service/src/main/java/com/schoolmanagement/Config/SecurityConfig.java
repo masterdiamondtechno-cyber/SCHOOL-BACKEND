@@ -1,4 +1,4 @@
-package com.schoolmanagement.Config;
+﻿package com.schoolmanagement.Config;
 
 import java.util.List;
 
@@ -36,6 +36,7 @@ public class SecurityConfig {
 
                                                 // ── Open / Public endpoints ──────────────────────────────────
                                                 .requestMatchers(
+                                                                new AntPathRequestMatcher("/uploads/**"),
                                                                 new AntPathRequestMatcher("/api/auth/**"),
                                                                 new AntPathRequestMatcher("/api/auth/admin/**"),
                                                                 new AntPathRequestMatcher("/api/AddSchool/create"),

@@ -64,6 +64,8 @@ public class TeacherLoginServiceImpl implements TeacherLoginService {
         Map<String, Object> schoolInfo = new LinkedHashMap<>();
         schoolInfo.put("id",   teacher.getSchool().getSchoolId());
         schoolInfo.put("name", teacher.getSchool().getSchoolName());
+        schoolInfo.put("logo", teacher.getSchool().getSchoolLogo());
+        schoolInfo.put("schoolLogo", teacher.getSchool().getSchoolLogo());
 
         Map<String, Object> data = new LinkedHashMap<>();
         data.put("token",  token);
