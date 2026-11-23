@@ -3,6 +3,7 @@ bin/
 .settings/
 .classpath
 .project
+.factorypath
 src/main/resources/application-local.properties
 src/main/resources/application-secret.properties
 .env
